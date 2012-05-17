@@ -328,6 +328,11 @@ namespace UHC_Tracker
             txtSeq.Text = seq.ToString();
             txtMSeq.Text = mseq.ToString();
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            txtTime.Text = (Math.Round(Double.Parse(txtTime.Text) + (Double.Parse(txtInc.Text) / 60), 2)).ToString();
+        }
     }
 
     public static class test

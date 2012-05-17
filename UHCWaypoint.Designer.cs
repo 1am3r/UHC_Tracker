@@ -59,8 +59,6 @@
             this.cmbPlayer = new System.Windows.Forms.ComboBox();
             this.label10 = new System.Windows.Forms.Label();
             this.dgvPoints = new System.Windows.Forms.DataGridView();
-            this.label11 = new System.Windows.Forms.Label();
-            this.txtMSeq = new System.Windows.Forms.TextBox();
             this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -71,6 +69,9 @@
             this.clmDesc = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.cmsPoints = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsmiDeleteRow = new System.Windows.Forms.ToolStripMenuItem();
+            this.label11 = new System.Windows.Forms.Label();
+            this.txtMSeq = new System.Windows.Forms.TextBox();
+            this.button1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dgvPoints)).BeginInit();
             this.cmsPoints.SuspendLayout();
             this.SuspendLayout();
@@ -186,11 +187,11 @@
             // 
             this.label6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(479, 8);
+            this.label6.Location = new System.Drawing.Point(512, 8);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(115, 13);
+            this.label6.Size = new System.Drawing.Size(82, 13);
             this.label6.TabIndex = 12;
-            this.label6.Text = "Default time increment:";
+            this.label6.Text = "Time increment:";
             // 
             // txtTime
             // 
@@ -395,24 +396,6 @@
             this.dgvPoints.TabIndex = 30;
             this.dgvPoints.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.dgvPoints_DataError);
             // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(113, 87);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(65, 13);
-            this.label11.TabIndex = 32;
-            this.label11.Text = "Marker Seq:";
-            // 
-            // txtMSeq
-            // 
-            this.txtMSeq.Location = new System.Drawing.Point(184, 84);
-            this.txtMSeq.Name = "txtMSeq";
-            this.txtMSeq.Size = new System.Drawing.Size(57, 20);
-            this.txtMSeq.TabIndex = 31;
-            this.txtMSeq.Text = "0";
-            this.txtMSeq.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            // 
             // Column1
             // 
             this.Column1.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
@@ -504,11 +487,40 @@
             this.tsmiDeleteRow.Size = new System.Drawing.Size(152, 22);
             this.tsmiDeleteRow.Text = "Delete Row";
             // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(113, 87);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(65, 13);
+            this.label11.TabIndex = 32;
+            this.label11.Text = "Marker Seq:";
+            // 
+            // txtMSeq
+            // 
+            this.txtMSeq.Location = new System.Drawing.Point(184, 84);
+            this.txtMSeq.Name = "txtMSeq";
+            this.txtMSeq.Size = new System.Drawing.Size(57, 20);
+            this.txtMSeq.TabIndex = 31;
+            this.txtMSeq.Text = "0";
+            this.txtMSeq.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(247, 30);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(95, 23);
+            this.button1.TabIndex = 33;
+            this.button1.Text = "Increment Time";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // UHCWaypoint
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(644, 372);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.label11);
             this.Controls.Add(this.txtMSeq);
             this.Controls.Add(this.dgvPoints);
@@ -528,8 +540,8 @@
             this.Controls.Add(this.label8);
             this.Controls.Add(this.txtTime);
             this.Controls.Add(this.label7);
-            this.Controls.Add(this.label6);
             this.Controls.Add(this.txtInc);
+            this.Controls.Add(this.label6);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.txtRotation);
             this.Controls.Add(this.label4);
@@ -598,6 +610,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn clmDesc;
         private System.Windows.Forms.ContextMenuStrip cmsPoints;
         private System.Windows.Forms.ToolStripMenuItem tsmiDeleteRow;
+        private System.Windows.Forms.Button button1;
     }
 }
 
