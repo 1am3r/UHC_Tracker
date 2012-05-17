@@ -72,6 +72,7 @@
             this.label11 = new System.Windows.Forms.Label();
             this.txtMSeq = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
+            this.button2 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dgvPoints)).BeginInit();
             this.cmsPoints.SuspendLayout();
             this.SuspendLayout();
@@ -80,7 +81,7 @@
             // 
             this.lblStatus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblStatus.AutoSize = true;
-            this.lblStatus.Location = new System.Drawing.Point(12, 350);
+            this.lblStatus.Location = new System.Drawing.Point(12, 386);
             this.lblStatus.Name = "lblStatus";
             this.lblStatus.Size = new System.Drawing.Size(73, 13);
             this.lblStatus.TabIndex = 0;
@@ -243,7 +244,7 @@
             // btnSave
             // 
             this.btnSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnSave.Location = new System.Drawing.Point(12, 324);
+            this.btnSave.Location = new System.Drawing.Point(12, 360);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(75, 23);
             this.btnSave.TabIndex = 18;
@@ -323,7 +324,7 @@
             // btnUpdate
             // 
             this.btnUpdate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnUpdate.Location = new System.Drawing.Point(544, 324);
+            this.btnUpdate.Location = new System.Drawing.Point(546, 344);
             this.btnUpdate.Name = "btnUpdate";
             this.btnUpdate.Size = new System.Drawing.Size(88, 23);
             this.btnUpdate.TabIndex = 27;
@@ -392,7 +393,7 @@
             this.dgvPoints.RowTemplate.ReadOnly = true;
             this.dgvPoints.RowTemplate.Resizable = System.Windows.Forms.DataGridViewTriState.False;
             this.dgvPoints.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
-            this.dgvPoints.Size = new System.Drawing.Size(620, 107);
+            this.dgvPoints.Size = new System.Drawing.Size(620, 127);
             this.dgvPoints.TabIndex = 30;
             this.dgvPoints.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.dgvPoints_DataError);
             // 
@@ -478,13 +479,13 @@
             this.cmsPoints.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsmiDeleteRow});
             this.cmsPoints.Name = "cmsPoints";
-            this.cmsPoints.Size = new System.Drawing.Size(153, 48);
+            this.cmsPoints.Size = new System.Drawing.Size(134, 26);
             this.cmsPoints.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.cmsPoints_ItemClicked);
             // 
             // tsmiDeleteRow
             // 
             this.tsmiDeleteRow.Name = "tsmiDeleteRow";
-            this.tsmiDeleteRow.Size = new System.Drawing.Size(152, 22);
+            this.tsmiDeleteRow.Size = new System.Drawing.Size(133, 22);
             this.tsmiDeleteRow.Text = "Delete Row";
             // 
             // label11
@@ -515,24 +516,37 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
+            // button2
+            // 
+            this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.button2.Location = new System.Drawing.Point(546, 373);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(88, 23);
+            this.button2.TabIndex = 34;
+            this.button2.Text = "Clear";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
             // UHCWaypoint
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(644, 372);
+            this.ClientSize = new System.Drawing.Size(644, 408);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.label11);
             this.Controls.Add(this.txtMSeq);
             this.Controls.Add(this.dgvPoints);
             this.Controls.Add(this.label10);
+            this.Controls.Add(this.button2);
             this.Controls.Add(this.cmbPlayer);
-            this.Controls.Add(this.btnUpdate);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.txtSeq);
             this.Controls.Add(this.btnDeath);
             this.Controls.Add(this.btnPortal);
             this.Controls.Add(this.btnFight);
             this.Controls.Add(this.btnSpotted);
+            this.Controls.Add(this.btnUpdate);
             this.Controls.Add(this.btnHouse);
             this.Controls.Add(this.btnSave);
             this.Controls.Add(this.btnWaypoint);
@@ -611,6 +625,7 @@
         private System.Windows.Forms.ContextMenuStrip cmsPoints;
         private System.Windows.Forms.ToolStripMenuItem tsmiDeleteRow;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button button2;
     }
 }
 

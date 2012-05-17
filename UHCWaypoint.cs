@@ -333,6 +333,15 @@ namespace UHC_Tracker
         {
             txtTime.Text = (Math.Round(Double.Parse(txtTime.Text) + (Double.Parse(txtInc.Text) / 60), 2)).ToString();
         }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            DialogResult result = MessageBox.Show("Do you really want to discard all entrys?", "Are you sure?", MessageBoxButtons.YesNo);
+            if (result == System.Windows.Forms.DialogResult.Yes)
+            {
+                dgvPoints.Rows.Clear();
+            }
+        }
     }
 
     public static class test
