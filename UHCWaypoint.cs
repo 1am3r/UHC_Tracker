@@ -211,7 +211,8 @@ namespace UHC_Tracker
                 txtMSeq.Text = (int.Parse(txtMSeq.Text) + 1).ToString();
             }
 
-            double time = int.Parse(txtTime.Text) + (double.Parse(txtSecs.Text) / 60);
+            double time = int.Parse(txtMins.Text) + (double.Parse(txtSecs.Text) / 60);
+            time -= int.Parse(txtOffMins.Text) + (double.Parse(txtOffSecs.Text) / 60);
 
             Dictionary<string, string> data = new Dictionary<string, string>();
             data.Add("seq", seq);
@@ -224,7 +225,7 @@ namespace UHC_Tracker
 
             addRow(createRow(data), topPart);
 
-            lblDataSets.Text = dgvPoints.RowCount.ToString();
+            lblDataSets.Text = (dgvPoints.RowCount - 1).ToString();
         }
 
         private void btnSave_Click(object sender, EventArgs e)
@@ -246,9 +247,11 @@ namespace UHC_Tracker
             json.WriteStartArray();
             JsonSerializer jsonSer = new JsonSerializer();
             jsonSer.Formatting = Formatting.None;
+            jsonSer.NullValueHandling = NullValueHandling.Ignore;
             foreach (DataGridViewRow row in dgvPoints.Rows)
             {
-                IDictionary<string, string> d = convertRow(row);
+                //IDictionary<string, string> d = convertRow(row);
+                RowData d = createRowObject(row);
                 if (d != null)
                 {
                     StringBuilder sb = new StringBuilder();
@@ -304,6 +307,37 @@ namespace UHC_Tracker
 
             sb.Append("},");
             return sb.ToString();
+        }
+
+        private RowData createRowObject(DataGridViewRow row)
+        {
+            RowData rd = new RowData();
+
+            if (row.Cells[0].Value == null || ((string)row.Cells[0].Value) == "" ||
+                row.Cells[1].Value == null || ((string)row.Cells[1].Value) == "" ||
+                row.Cells[2].Value == null || ((string)row.Cells[2].Value) == "" ||
+                row.Cells[3].Value == null || ((string)row.Cells[3].Value) == "" ||
+                row.Cells[4].Value == null || ((string)row.Cells[4].Value) == "" ||
+                row.Cells[5].Value == null || ((string)row.Cells[5].Value) == "" ||
+                row.Cells[6].Value == null || ((string)row.Cells[6].Value) == "")
+            {
+                return null;
+            }
+
+            rd.seq = int.Parse(row.Cells[0].Value.ToString());
+            rd.x = int.Parse(row.Cells[1].Value.ToString());
+            rd.y = int.Parse(row.Cells[2].Value.ToString());
+            rd.z = int.Parse(row.Cells[3].Value.ToString());
+            rd.id = int.Parse(row.Cells[4].Value.ToString());
+            rd.time = double.Parse(row.Cells[5].Value.ToString());
+            rd.msg = row.Cells[6].Value.ToString();
+
+            if (((string)row.Cells[7].Value) != "" && row.Cells[4].Value != null && int.Parse(row.Cells[4].Value.ToString()) != 0)
+            {
+                rd.desc = row.Cells[7].Value.ToString();
+            }
+
+            return rd;
         }
 
         private IDictionary<string, string> convertRow(DataGridViewRow row)
@@ -408,7 +442,7 @@ namespace UHC_Tracker
                     {
                         dgvPoints.Rows.RemoveAt(index);
                         findNewSeq();
-                        lblDataSets.Text = dgvPoints.RowCount.ToString();
+                        lblDataSets.Text = (dgvPoints.RowCount - 1).ToString();
                     }
                 }
             }
@@ -443,10 +477,10 @@ namespace UHC_Tracker
 
         private void addTime(int secs)
         {
-            double time = Double.Parse(txtTime.Text) + (Double.Parse(txtSecs.Text) / 60);
+            double time = Double.Parse(txtMins.Text) + (Double.Parse(txtSecs.Text) / 60);
             time += ((double) secs) / 60;
             double mins = Math.Floor(time);
-            txtTime.Text = mins.ToString();
+            txtMins.Text = mins.ToString();
             txtSecs.Text = (Math.Round((time - mins) * 60, 0)).ToString("0#");
         }
 
@@ -457,12 +491,15 @@ namespace UHC_Tracker
 
         private void btnClear_Click(object sender, EventArgs e)
         {
-            DialogResult result = MessageBox.Show("Do you really want to discard all entrys?", "Are you sure?", MessageBoxButtons.YesNo);
-            if (result == System.Windows.Forms.DialogResult.Yes)
+            if (dgvPoints.Rows.Count > 1)
             {
-                topPartIndex = 0;
-                dgvPoints.Rows.Clear();
-                lblDataSets.Text = dgvPoints.RowCount.ToString();
+                DialogResult result = MessageBox.Show("Do you really want to discard all entrys?", "Are you sure?", MessageBoxButtons.YesNo);
+                if (result == System.Windows.Forms.DialogResult.Yes)
+                {
+                    topPartIndex = 0;
+                    dgvPoints.Rows.Clear();
+                    lblDataSets.Text = (dgvPoints.RowCount - 1).ToString();
+                }
             }
         }
 
@@ -477,23 +514,26 @@ namespace UHC_Tracker
 
         private void btnLoad_Click(object sender, EventArgs e)
         {
-            DialogResult result = MessageBox.Show("Do you really want to discard all entrys?", "Are you sure?", MessageBoxButtons.YesNo);
-            if (result == System.Windows.Forms.DialogResult.Yes)
+            if (dgvPoints.Rows.Count > 1)
             {
-                topPartIndex = 0;
-                dgvPoints.Rows.Clear();
-            }
-            else
-            {
-                return;
+                DialogResult result = MessageBox.Show("Do you really want to discard all entrys?", "Are you sure?", MessageBoxButtons.YesNo);
+                if (result == System.Windows.Forms.DialogResult.Yes)
+                {
+                    topPartIndex = 0;
+                    dgvPoints.Rows.Clear();
+                }
+                else
+                {
+                    return;
+                }
             }
 
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.FileName = cmbPlayer.Text + ".json";
             ofd.DefaultExt = ".json";
-            result = ofd.ShowDialog();
+            DialogResult ofdResult = ofd.ShowDialog();
 
-            if (result == System.Windows.Forms.DialogResult.Cancel)
+            if (ofdResult == System.Windows.Forms.DialogResult.Cancel)
             {
                 return;
             }
@@ -519,6 +559,18 @@ namespace UHC_Tracker
                 }
             }
         }
+    }
+
+    public class RowData
+    {
+        public int seq { get; set; }
+        public int x { get; set; }
+        public int y { get; set; }
+        public int z  { get; set; }
+        public int id { get; set; }
+        public double time { get; set; }
+        public string msg { get; set; }
+        public string desc { get; set; }
     }
 
     public static class test

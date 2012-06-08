@@ -41,7 +41,7 @@
             this.label5 = new System.Windows.Forms.Label();
             this.txtInc = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
-            this.txtTime = new System.Windows.Forms.TextBox();
+            this.txtMins = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.lblDataSets = new System.Windows.Forms.Label();
@@ -78,8 +78,8 @@
             this.label14 = new System.Windows.Forms.Label();
             this.txtSecs = new System.Windows.Forms.TextBox();
             this.label15 = new System.Windows.Forms.Label();
-            this.textBox3 = new System.Windows.Forms.TextBox();
-            this.textBox4 = new System.Windows.Forms.TextBox();
+            this.txtOffMins = new System.Windows.Forms.TextBox();
+            this.txtOffSecs = new System.Windows.Forms.TextBox();
             this.label16 = new System.Windows.Forms.Label();
             this.label17 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -205,14 +205,14 @@
             // 
             // txtTime
             // 
-            this.txtTime.Location = new System.Drawing.Point(184, 32);
-            this.txtTime.MaxLength = 3;
-            this.txtTime.Name = "txtTime";
-            this.txtTime.Size = new System.Drawing.Size(31, 20);
-            this.txtTime.TabIndex = 13;
-            this.txtTime.Text = "0";
-            this.txtTime.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.txtTime.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtTime_KeyPress);
+            this.txtMins.Location = new System.Drawing.Point(184, 32);
+            this.txtMins.MaxLength = 3;
+            this.txtMins.Name = "txtTime";
+            this.txtMins.Size = new System.Drawing.Size(31, 20);
+            this.txtMins.TabIndex = 13;
+            this.txtMins.Text = "0";
+            this.txtMins.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.txtMins.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtTime_KeyPress);
             // 
             // label7
             // 
@@ -608,27 +608,27 @@
             this.label15.TabIndex = 42;
             this.label15.Text = ":";
             // 
-            // textBox3
+            // txtOffMin
             // 
-            this.textBox3.Location = new System.Drawing.Point(184, 58);
-            this.textBox3.MaxLength = 3;
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(31, 20);
-            this.textBox3.TabIndex = 43;
-            this.textBox3.Text = "0";
-            this.textBox3.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.textBox3.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtTime_KeyPress);
+            this.txtOffMins.Location = new System.Drawing.Point(184, 58);
+            this.txtOffMins.MaxLength = 3;
+            this.txtOffMins.Name = "txtOffMin";
+            this.txtOffMins.Size = new System.Drawing.Size(31, 20);
+            this.txtOffMins.TabIndex = 43;
+            this.txtOffMins.Text = "0";
+            this.txtOffMins.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.txtOffMins.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtTime_KeyPress);
             // 
-            // textBox4
+            // txtOffSecs
             // 
-            this.textBox4.Location = new System.Drawing.Point(220, 58);
-            this.textBox4.MaxLength = 2;
-            this.textBox4.Name = "textBox4";
-            this.textBox4.Size = new System.Drawing.Size(21, 20);
-            this.textBox4.TabIndex = 45;
-            this.textBox4.Text = "00";
-            this.textBox4.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.textBox4.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtSeq_KeyPress);
+            this.txtOffSecs.Location = new System.Drawing.Point(220, 58);
+            this.txtOffSecs.MaxLength = 2;
+            this.txtOffSecs.Name = "txtOffSecs";
+            this.txtOffSecs.Size = new System.Drawing.Size(21, 20);
+            this.txtOffSecs.TabIndex = 45;
+            this.txtOffSecs.Text = "00";
+            this.txtOffSecs.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.txtOffSecs.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtSeq_KeyPress);
             // 
             // label16
             // 
@@ -737,12 +737,12 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(644, 435);
             this.Controls.Add(this.groupBox2);
-            this.Controls.Add(this.textBox3);
+            this.Controls.Add(this.txtOffMins);
             this.Controls.Add(this.groupBox1);
-            this.Controls.Add(this.textBox4);
+            this.Controls.Add(this.txtOffSecs);
             this.Controls.Add(this.label16);
             this.Controls.Add(this.label17);
-            this.Controls.Add(this.txtTime);
+            this.Controls.Add(this.txtMins);
             this.Controls.Add(this.txtSecs);
             this.Controls.Add(this.label15);
             this.Controls.Add(this.label14);
@@ -810,7 +810,7 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox txtInc;
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.TextBox txtTime;
+        private System.Windows.Forms.TextBox txtMins;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label lblDataSets;
@@ -847,8 +847,8 @@
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.TextBox txtSecs;
         private System.Windows.Forms.Label label15;
-        private System.Windows.Forms.TextBox textBox3;
-        private System.Windows.Forms.TextBox textBox4;
+        private System.Windows.Forms.TextBox txtOffMins;
+        private System.Windows.Forms.TextBox txtOffSecs;
         private System.Windows.Forms.Label label16;
         private System.Windows.Forms.Label label17;
         private System.Windows.Forms.GroupBox groupBox1;
