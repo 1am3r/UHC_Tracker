@@ -212,7 +212,13 @@ namespace UHC_Tracker
             }
 
             double time = int.Parse(txtMins.Text) + (double.Parse(txtSecs.Text) / 60);
-            time -= int.Parse(txtOffMins.Text) + (double.Parse(txtOffSecs.Text) / 60);
+            double offset = int.Parse(txtOffMins.Text) + (double.Parse(txtOffSecs.Text) / 60);
+            if (chkOffNeg.Checked)
+            {
+                offset = -offset;
+            }
+            time -= offset;
+            
 
             Dictionary<string, string> data = new Dictionary<string, string>();
             data.Add("seq", seq);
@@ -332,8 +338,12 @@ namespace UHC_Tracker
             rd.time = double.Parse(row.Cells[5].Value.ToString());
             rd.msg = row.Cells[6].Value.ToString();
 
-            if (((string)row.Cells[7].Value) != "" && row.Cells[4].Value != null && int.Parse(row.Cells[4].Value.ToString()) != 0)
+            if (row.Cells[4].Value != null && int.Parse(row.Cells[4].Value.ToString()) != 0)
             {
+                if (row.Cells[7].Value == null)
+                {
+                    row.Cells[7].Value = "";
+                }
                 rd.desc = row.Cells[7].Value.ToString();
             }
 
@@ -453,9 +463,12 @@ namespace UHC_Tracker
             topPartIndex = 0;
             int seq = -1;
             int mseq = -1;
+            double time = 0;
             foreach (DataGridViewRow row in dgvPoints.Rows) {
-                if (row.Cells[4].Value != null)
+                if (row.Cells[0].Value != null && row.Cells[4].Value != null && row.Cells[5].Value != null)
                 {
+                    double curTime = double.Parse(row.Cells[5].Value.ToString());
+                    if (time < curTime) time = curTime;
 
                     if (int.Parse(row.Cells[4].Value.ToString()) == 0)
                     {
@@ -473,6 +486,10 @@ namespace UHC_Tracker
             seq++; mseq++;
             txtSeq.Text = seq.ToString();
             txtMSeq.Text = mseq.ToString();
+            double mins = Math.Floor(time);
+            txtMins.Text = ((int) mins).ToString();
+            txtSecs.Text = (Math.Round((time - mins) * 60, 0)).ToString("0#");
+            addTime(int.Parse(txtInc.Text));
         }
 
         private void addTime(int secs)
@@ -558,6 +575,8 @@ namespace UHC_Tracker
                     addRow(row, false);
                 }
             }
+
+            findNewSeq();
         }
     }
 

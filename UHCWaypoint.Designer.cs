@@ -89,6 +89,7 @@
             this.btnLoad = new System.Windows.Forms.Button();
             this.btnClear = new System.Windows.Forms.Button();
             this.btnSave = new System.Windows.Forms.Button();
+            this.chkOffNeg = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.dgvPoints)).BeginInit();
             this.cmsPoints.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -169,7 +170,8 @@
             this.txtRotation.Location = new System.Drawing.Point(57, 110);
             this.txtRotation.Name = "txtRotation";
             this.txtRotation.Size = new System.Drawing.Size(50, 20);
-            this.txtRotation.TabIndex = 5;
+            this.txtRotation.TabIndex = 0;
+            this.txtRotation.TabStop = false;
             this.txtRotation.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // label5
@@ -188,7 +190,7 @@
             this.txtInc.MaxLength = 3;
             this.txtInc.Name = "txtInc";
             this.txtInc.Size = new System.Drawing.Size(34, 20);
-            this.txtInc.TabIndex = 6;
+            this.txtInc.TabIndex = 17;
             this.txtInc.Text = "15";
             this.txtInc.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.txtInc.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtSeq_KeyPress);
@@ -203,13 +205,13 @@
             this.label6.TabIndex = 12;
             this.label6.Text = "Time increment:";
             // 
-            // txtTime
+            // txtMins
             // 
             this.txtMins.Location = new System.Drawing.Point(184, 32);
             this.txtMins.MaxLength = 3;
-            this.txtMins.Name = "txtTime";
+            this.txtMins.Name = "txtMins";
             this.txtMins.Size = new System.Drawing.Size(31, 20);
-            this.txtMins.TabIndex = 13;
+            this.txtMins.TabIndex = 5;
             this.txtMins.Text = "0";
             this.txtMins.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.txtMins.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtTime_KeyPress);
@@ -246,7 +248,7 @@
             this.btnWaypoint.Location = new System.Drawing.Point(12, 169);
             this.btnWaypoint.Name = "btnWaypoint";
             this.btnWaypoint.Size = new System.Drawing.Size(95, 23);
-            this.btnWaypoint.TabIndex = 17;
+            this.btnWaypoint.TabIndex = 11;
             this.btnWaypoint.Text = "Add Waypoint";
             this.btnWaypoint.UseVisualStyleBackColor = true;
             this.btnWaypoint.Click += new System.EventHandler(this.btnWaypoint_Click);
@@ -256,7 +258,7 @@
             this.btnHouse.Location = new System.Drawing.Point(133, 169);
             this.btnHouse.Name = "btnHouse";
             this.btnHouse.Size = new System.Drawing.Size(95, 23);
-            this.btnHouse.TabIndex = 19;
+            this.btnHouse.TabIndex = 12;
             this.btnHouse.Text = "Add House";
             this.btnHouse.UseVisualStyleBackColor = true;
             this.btnHouse.Click += new System.EventHandler(this.addPoint);
@@ -266,7 +268,7 @@
             this.btnSpotted.Location = new System.Drawing.Point(436, 169);
             this.btnSpotted.Name = "btnSpotted";
             this.btnSpotted.Size = new System.Drawing.Size(95, 23);
-            this.btnSpotted.TabIndex = 20;
+            this.btnSpotted.TabIndex = 15;
             this.btnSpotted.Text = "Add Spotted";
             this.btnSpotted.UseVisualStyleBackColor = true;
             this.btnSpotted.Click += new System.EventHandler(this.addPoint);
@@ -276,7 +278,7 @@
             this.btnFight.Location = new System.Drawing.Point(335, 169);
             this.btnFight.Name = "btnFight";
             this.btnFight.Size = new System.Drawing.Size(95, 23);
-            this.btnFight.TabIndex = 21;
+            this.btnFight.TabIndex = 14;
             this.btnFight.Text = "Add Fightpoint";
             this.btnFight.UseVisualStyleBackColor = true;
             this.btnFight.Click += new System.EventHandler(this.addPoint);
@@ -286,7 +288,7 @@
             this.btnPortal.Location = new System.Drawing.Point(234, 169);
             this.btnPortal.Name = "btnPortal";
             this.btnPortal.Size = new System.Drawing.Size(95, 23);
-            this.btnPortal.TabIndex = 22;
+            this.btnPortal.TabIndex = 13;
             this.btnPortal.Text = "Add Portal";
             this.btnPortal.UseVisualStyleBackColor = true;
             this.btnPortal.Click += new System.EventHandler(this.addPoint);
@@ -296,7 +298,7 @@
             this.btnDeath.Location = new System.Drawing.Point(537, 169);
             this.btnDeath.Name = "btnDeath";
             this.btnDeath.Size = new System.Drawing.Size(95, 23);
-            this.btnDeath.TabIndex = 23;
+            this.btnDeath.TabIndex = 16;
             this.btnDeath.Text = "Add Deathpoint";
             this.btnDeath.UseVisualStyleBackColor = true;
             this.btnDeath.Click += new System.EventHandler(this.addPoint);
@@ -306,7 +308,7 @@
             this.txtSeq.Location = new System.Drawing.Point(184, 84);
             this.txtSeq.Name = "txtSeq";
             this.txtSeq.Size = new System.Drawing.Size(57, 20);
-            this.txtSeq.TabIndex = 25;
+            this.txtSeq.TabIndex = 9;
             this.txtSeq.Text = "0";
             this.txtSeq.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.txtSeq.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtSeq_KeyPress);
@@ -326,7 +328,7 @@
             this.btnUpdate.Location = new System.Drawing.Point(13, 19);
             this.btnUpdate.Name = "btnUpdate";
             this.btnUpdate.Size = new System.Drawing.Size(88, 23);
-            this.btnUpdate.TabIndex = 27;
+            this.btnUpdate.TabIndex = 25;
             this.btnUpdate.Text = "Stop Updating";
             this.btnUpdate.UseVisualStyleBackColor = true;
             this.btnUpdate.Click += new System.EventHandler(this.btnUpdate_Click);
@@ -353,7 +355,7 @@
             this.cmbPlayer.Location = new System.Drawing.Point(57, 5);
             this.cmbPlayer.Name = "cmbPlayer";
             this.cmbPlayer.Size = new System.Drawing.Size(184, 21);
-            this.cmbPlayer.TabIndex = 28;
+            this.cmbPlayer.TabIndex = 1;
             // 
             // label10
             // 
@@ -394,7 +396,7 @@
             this.dgvPoints.RowTemplate.Resizable = System.Windows.Forms.DataGridViewTriState.False;
             this.dgvPoints.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
             this.dgvPoints.Size = new System.Drawing.Size(620, 127);
-            this.dgvPoints.TabIndex = 30;
+            this.dgvPoints.TabIndex = 21;
             this.dgvPoints.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.dgvPoints_DataError);
             // 
             // Column1
@@ -502,7 +504,7 @@
             this.txtMSeq.Location = new System.Drawing.Point(184, 110);
             this.txtMSeq.Name = "txtMSeq";
             this.txtMSeq.Size = new System.Drawing.Size(57, 20);
-            this.txtMSeq.TabIndex = 31;
+            this.txtMSeq.TabIndex = 10;
             this.txtMSeq.Text = "0";
             this.txtMSeq.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.txtMSeq.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtSeq_KeyPress);
@@ -512,7 +514,7 @@
             this.btnIncrement.Location = new System.Drawing.Point(247, 30);
             this.btnIncrement.Name = "btnIncrement";
             this.btnIncrement.Size = new System.Drawing.Size(95, 23);
-            this.btnIncrement.TabIndex = 33;
+            this.btnIncrement.TabIndex = 11;
             this.btnIncrement.Text = "Increment Time";
             this.btnIncrement.UseVisualStyleBackColor = true;
             this.btnIncrement.Click += new System.EventHandler(this.btnIncrement_Click);
@@ -535,7 +537,7 @@
             this.cmdEpisode.Location = new System.Drawing.Point(600, 31);
             this.cmdEpisode.Name = "cmdEpisode";
             this.cmdEpisode.Size = new System.Drawing.Size(34, 21);
-            this.cmdEpisode.TabIndex = 36;
+            this.cmdEpisode.TabIndex = 18;
             this.cmdEpisode.Visible = false;
             // 
             // label12
@@ -553,7 +555,7 @@
             this.textBox1.Location = new System.Drawing.Point(600, 84);
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(34, 20);
-            this.textBox1.TabIndex = 38;
+            this.textBox1.TabIndex = 20;
             this.textBox1.Text = "0";
             this.textBox1.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.textBox1.Visible = false;
@@ -563,7 +565,7 @@
             this.textBox2.Location = new System.Drawing.Point(600, 58);
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(34, 20);
-            this.textBox2.TabIndex = 37;
+            this.textBox2.TabIndex = 19;
             this.textBox2.Text = "0";
             this.textBox2.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.textBox2.Visible = false;
@@ -594,7 +596,7 @@
             this.txtSecs.MaxLength = 2;
             this.txtSecs.Name = "txtSecs";
             this.txtSecs.Size = new System.Drawing.Size(21, 20);
-            this.txtSecs.TabIndex = 41;
+            this.txtSecs.TabIndex = 6;
             this.txtSecs.Text = "00";
             this.txtSecs.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.txtSecs.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtSeq_KeyPress);
@@ -608,13 +610,13 @@
             this.label15.TabIndex = 42;
             this.label15.Text = ":";
             // 
-            // txtOffMin
+            // txtOffMins
             // 
             this.txtOffMins.Location = new System.Drawing.Point(184, 58);
             this.txtOffMins.MaxLength = 3;
-            this.txtOffMins.Name = "txtOffMin";
+            this.txtOffMins.Name = "txtOffMins";
             this.txtOffMins.Size = new System.Drawing.Size(31, 20);
-            this.txtOffMins.TabIndex = 43;
+            this.txtOffMins.TabIndex = 7;
             this.txtOffMins.Text = "0";
             this.txtOffMins.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.txtOffMins.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtTime_KeyPress);
@@ -625,7 +627,7 @@
             this.txtOffSecs.MaxLength = 2;
             this.txtOffSecs.Name = "txtOffSecs";
             this.txtOffSecs.Size = new System.Drawing.Size(21, 20);
-            this.txtOffSecs.TabIndex = 45;
+            this.txtOffSecs.TabIndex = 8;
             this.txtOffSecs.Text = "00";
             this.txtOffSecs.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.txtOffSecs.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtSeq_KeyPress);
@@ -668,7 +670,7 @@
             this.btnConnect.Location = new System.Drawing.Point(13, 47);
             this.btnConnect.Name = "btnConnect";
             this.btnConnect.Size = new System.Drawing.Size(88, 23);
-            this.btnConnect.TabIndex = 50;
+            this.btnConnect.TabIndex = 26;
             this.btnConnect.Text = "Connect";
             this.btnConnect.UseVisualStyleBackColor = true;
             this.btnConnect.Click += new System.EventHandler(this.btnConnect_Click);
@@ -703,7 +705,7 @@
             this.btnLoad.Location = new System.Drawing.Point(6, 48);
             this.btnLoad.Name = "btnLoad";
             this.btnLoad.Size = new System.Drawing.Size(75, 23);
-            this.btnLoad.TabIndex = 53;
+            this.btnLoad.TabIndex = 23;
             this.btnLoad.Text = "Load Points";
             this.btnLoad.UseVisualStyleBackColor = true;
             this.btnLoad.Click += new System.EventHandler(this.btnLoad_Click);
@@ -715,7 +717,7 @@
             this.btnClear.Location = new System.Drawing.Point(102, 19);
             this.btnClear.Name = "btnClear";
             this.btnClear.Size = new System.Drawing.Size(75, 23);
-            this.btnClear.TabIndex = 52;
+            this.btnClear.TabIndex = 24;
             this.btnClear.Text = "Clear";
             this.btnClear.UseVisualStyleBackColor = true;
             this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
@@ -726,16 +728,27 @@
             this.btnSave.Location = new System.Drawing.Point(6, 19);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(75, 23);
-            this.btnSave.TabIndex = 51;
+            this.btnSave.TabIndex = 22;
             this.btnSave.Text = "Save Points";
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
+            // 
+            // chkOffNeg
+            // 
+            this.chkOffNeg.AutoSize = true;
+            this.chkOffNeg.Location = new System.Drawing.Point(249, 59);
+            this.chkOffNeg.Name = "chkOffNeg";
+            this.chkOffNeg.Size = new System.Drawing.Size(69, 17);
+            this.chkOffNeg.TabIndex = 52;
+            this.chkOffNeg.Text = "Negative";
+            this.chkOffNeg.UseVisualStyleBackColor = true;
             // 
             // UHCWaypoint
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(644, 435);
+            this.Controls.Add(this.chkOffNeg);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.txtOffMins);
             this.Controls.Add(this.groupBox1);
@@ -858,6 +871,7 @@
         private System.Windows.Forms.Button btnLoad;
         private System.Windows.Forms.Button btnClear;
         private System.Windows.Forms.Button btnSave;
+        private System.Windows.Forms.CheckBox chkOffNeg;
     }
 }
 
