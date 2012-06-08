@@ -8,8 +8,12 @@ using System.Text;
 using System.Windows.Forms;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Net;
 
 using Newtonsoft.Json;
+
+using DropNet;
+using DropNet.Authenticators;
 
 namespace UHC_Tracker
 {
@@ -538,6 +542,7 @@ namespace UHC_Tracker
                 {
                     topPartIndex = 0;
                     dgvPoints.Rows.Clear();
+                    lblDataSets.Text = (dgvPoints.RowCount - 1).ToString();
                 }
                 else
                 {
@@ -577,6 +582,94 @@ namespace UHC_Tracker
             }
 
             findNewSeq();
+        }
+
+        private void btnDownload_Click(object sender, EventArgs e)
+        {
+            if (dgvPoints.Rows.Count > 1)
+            {
+                DialogResult result = MessageBox.Show("Do you really want to discard all entrys?", "Are you sure?", MessageBoxButtons.YesNo);
+                if (result != System.Windows.Forms.DialogResult.Yes)
+                {
+                    return;
+                }
+            }
+
+            try
+            {
+                WebClient dataClient = new WebClient();
+                System.IO.Stream dataStrm = dataClient.OpenRead("http://88.198.183.184/uhc7/data/" + cmbPlayer.Text + ".json");
+
+                topPartIndex = 0;
+                dgvPoints.Rows.Clear();
+                lblDataSets.Text = (dgvPoints.RowCount - 1).ToString();
+
+                System.IO.StreamReader sr = new System.IO.StreamReader(dataStrm);
+                JsonTextReader json = new JsonTextReader(sr);
+                JsonSerializer jsonSer = new JsonSerializer();
+                List<IDictionary<string, string>> data = jsonSer.Deserialize<List<IDictionary<string, string>>>(json);
+                json.Close();
+                sr.Close();
+
+                foreach (IDictionary<string, string> d in data)
+                {
+                    DataGridViewRow row = createRow(d);
+                    int id = int.Parse(d["id"]);
+                    if (id != 0)
+                    {
+                        addRow(row, true);
+                    }
+                    else
+                    {
+                        addRow(row, false);
+                    }
+                }
+
+                findNewSeq();
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Couldn't download data! ex:" + ex.Message);
+                return;
+            }
+        }
+
+        private void btnUpload_Click(object sender, EventArgs e)
+        {
+            System.IO.Stream data = new System.IO.MemoryStream(64 * 1024);
+            System.IO.StreamWriter sw = new System.IO.StreamWriter(data);
+            JsonTextWriter json = new JsonTextWriter(sw);
+            json.Formatting = Formatting.Indented;
+            json.WriteStartArray();
+            JsonSerializer jsonSer = new JsonSerializer();
+            jsonSer.Formatting = Formatting.None;
+            jsonSer.NullValueHandling = NullValueHandling.Ignore;
+            foreach (DataGridViewRow row in dgvPoints.Rows)
+            {
+                //IDictionary<string, string> d = convertRow(row);
+                RowData d = createRowObject(row);
+                if (d != null)
+                {
+                    StringBuilder sb = new StringBuilder();
+                    System.IO.StringWriter swL = new System.IO.StringWriter(sb);
+                    jsonSer.Serialize(swL, d);
+
+                    json.Formatting = Formatting.Indented;
+                    json.WriteRawValue(sb.ToString());
+                }
+            }
+            json.WriteEndArray();
+
+            string timeStr = ((int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds).ToString();
+            sw.Flush();
+            data.Position = 0;
+
+            DropNetClient dropClient = new DropNetClient("q7sr7mpetc5kbei", "50jcxh2o3ofhkpg", "iguo6ia89lojpei", "bz82sp8r218pi3q");
+            dropClient.UseSandbox = true;
+            DropNet.Models.MetaData mdata =  dropClient.UploadFile("/", cmbPlayer.Text + ".json." + timeStr, data);
+
+            json.Close();
         }
     }
 

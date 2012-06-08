@@ -86,6 +86,8 @@
             this.btnConnect = new System.Windows.Forms.Button();
             this.lblStatus = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.btnDownload = new System.Windows.Forms.Button();
+            this.btnUpload = new System.Windows.Forms.Button();
             this.btnLoad = new System.Windows.Forms.Button();
             this.btnClear = new System.Windows.Forms.Button();
             this.btnSave = new System.Windows.Forms.Button();
@@ -689,15 +691,39 @@
             // 
             this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox2.Controls.Add(this.btnDownload);
+            this.groupBox2.Controls.Add(this.btnUpload);
             this.groupBox2.Controls.Add(this.btnLoad);
             this.groupBox2.Controls.Add(this.btnClear);
             this.groupBox2.Controls.Add(this.btnSave);
             this.groupBox2.Location = new System.Drawing.Point(12, 344);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(183, 81);
+            this.groupBox2.Size = new System.Drawing.Size(330, 81);
             this.groupBox2.TabIndex = 51;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Data";
+            // 
+            // btnDownload
+            // 
+            this.btnDownload.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnDownload.Location = new System.Drawing.Point(87, 48);
+            this.btnDownload.Name = "btnDownload";
+            this.btnDownload.Size = new System.Drawing.Size(75, 23);
+            this.btnDownload.TabIndex = 54;
+            this.btnDownload.Text = "Download";
+            this.btnDownload.UseVisualStyleBackColor = true;
+            this.btnDownload.Click += new System.EventHandler(this.btnDownload_Click);
+            // 
+            // btnUpload
+            // 
+            this.btnUpload.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnUpload.Location = new System.Drawing.Point(87, 19);
+            this.btnUpload.Name = "btnUpload";
+            this.btnUpload.Size = new System.Drawing.Size(75, 23);
+            this.btnUpload.TabIndex = 25;
+            this.btnUpload.Text = "Upload Points";
+            this.btnUpload.UseVisualStyleBackColor = true;
+            this.btnUpload.Click += new System.EventHandler(this.btnUpload_Click);
             // 
             // btnLoad
             // 
@@ -712,9 +738,8 @@
             // 
             // btnClear
             // 
-            this.btnClear.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnClear.Location = new System.Drawing.Point(102, 19);
+            this.btnClear.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnClear.Location = new System.Drawing.Point(249, 19);
             this.btnClear.Name = "btnClear";
             this.btnClear.Size = new System.Drawing.Size(75, 23);
             this.btnClear.TabIndex = 24;
@@ -872,6 +897,8 @@
         private System.Windows.Forms.Button btnClear;
         private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.CheckBox chkOffNeg;
+        private System.Windows.Forms.Button btnUpload;
+        private System.Windows.Forms.Button btnDownload;
     }
 }
 
