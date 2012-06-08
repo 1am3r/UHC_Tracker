@@ -9,6 +9,8 @@ using System.Windows.Forms;
 using System.Linq.Expressions;
 using System.Reflection;
 
+using Newtonsoft.Json;
+
 namespace UHC_Tracker
 {
     public partial class UHCWaypoint : Form, DataSource.DSHandlerPlayerLocation, DataSource.DSHandlerConnectionStatusChanged
@@ -28,6 +30,7 @@ namespace UHC_Tracker
             DataSource.DS.Connect("localhost", 50191);
 
             cmbPlayer.SelectedIndex = 0;
+            cmdEpisode.SelectedIndex = 0;
         }
 
         public void ConnectionStatusChanged(DataSource.ConnectionStatus newStatus)
@@ -37,23 +40,34 @@ namespace UHC_Tracker
                 case DataSource.ConnectionStatus.Idle:
                     timer1.Enabled = false;
                     lblStatus.SetPropertyThreadSafe(() => lblStatus.Text, "Not Connected");
+                    btnConnect.SetPropertyThreadSafe(() => btnConnect.Text, "Connect");
+                    btnConnect.SetPropertyThreadSafe(() => btnConnect.Enabled, true);
                     break;
                 case DataSource.ConnectionStatus.Connecting:
                     timer1.Enabled = false;
                     timer1.Start();
                     lblStatus.SetPropertyThreadSafe(() => lblStatus.Text, "Connecting");
+                    btnConnect.SetPropertyThreadSafe(() => btnConnect.Text, "Connect");
+                    btnConnect.SetPropertyThreadSafe(() => btnConnect.Enabled, false);
                     break;
                 case DataSource.ConnectionStatus.Connected:
                     timer1.Enabled = true;
                     lblStatus.SetPropertyThreadSafe(() => lblStatus.Text, "Connected");
+                    btnConnect.SetPropertyThreadSafe(() => btnConnect.Text, "Connect");
+                    btnConnect.SetPropertyThreadSafe(() => btnConnect.Enabled, false);
                     break;
                 case DataSource.ConnectionStatus.Refused:
                     timer1.Enabled = false;
                     lblStatus.SetPropertyThreadSafe(() => lblStatus.Text, "Connection refused");
+                    btnConnect.SetPropertyThreadSafe(() => btnConnect.Text, "Connect");
+                    btnConnect.SetPropertyThreadSafe(() => btnConnect.Enabled, true);
                     break;
                 case DataSource.ConnectionStatus.Disconnected:
                     timer1.Enabled = false;
-                    lblStatus.SetPropertyThreadSafe(() => lblStatus.Text, "Disconnected.  Attempting reconnect...");
+                    timer1.Stop();
+                    lblStatus.SetPropertyThreadSafe(() => lblStatus.Text, "Disconnected");
+                    btnConnect.SetPropertyThreadSafe(() => btnConnect.Text, "Connect");
+                    btnConnect.SetPropertyThreadSafe(() => btnConnect.Enabled, true);
                     break;
                 default:
                     timer1.Enabled = false;
@@ -73,7 +87,7 @@ namespace UHC_Tracker
             }
         }
 
-    private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             timer1.Enabled = false;
             timer1.Stop();
@@ -144,7 +158,7 @@ namespace UHC_Tracker
         {
             addPoint(sender, e);
 
-            txtTime.Text = (Math.Round(Double.Parse(txtTime.Text) + (Double.Parse(txtInc.Text) / 60), 2)).ToString();
+            addTime(int.Parse(txtInc.Text));
             txtSeq.Text = (int.Parse(txtSeq.Text) + 1).ToString();
         }
 
@@ -160,7 +174,6 @@ namespace UHC_Tracker
             }
         }
 
-        private int topPartIndex = 0;
         private void addPoint(object sender, EventArgs e)
         {
             string id = "0";
@@ -194,46 +207,22 @@ namespace UHC_Tracker
             }
             else
             {
-                topPartIndex++;
                 seq = txtMSeq.Text;
                 txtMSeq.Text = (int.Parse(txtMSeq.Text) + 1).ToString();
             }
 
-            DataGridViewRow row = new DataGridViewRow();
-            DataGridViewCell cell;
-            cell = new DataGridViewTextBoxCell();
-            cell.Value = seq;
-            row.Cells.Add(cell);
+            double time = int.Parse(txtTime.Text) + (double.Parse(txtSecs.Text) / 60);
 
-            cell = new DataGridViewTextBoxCell();
-            cell.Value = txtX.Text;
-            row.Cells.Add(cell);
-            cell = new DataGridViewTextBoxCell();
-            cell.Value = txtY.Text;
-            row.Cells.Add(cell);
-            cell = new DataGridViewTextBoxCell();
-            cell.Value = txtZ.Text;
-            row.Cells.Add(cell);
+            Dictionary<string, string> data = new Dictionary<string, string>();
+            data.Add("seq", seq);
+            data.Add("x", txtX.Text);
+            data.Add("y", txtY.Text);
+            data.Add("z", txtZ.Text);
+            data.Add("id", id.ToString());
+            data.Add("time", Math.Round(time, 2).ToString());
+            data.Add("msg", cmbPlayer.Text);
 
-            cell = new DataGridViewTextBoxCell();
-            cell.Value = id;
-            row.Cells.Add(cell);
-            cell = new DataGridViewTextBoxCell();
-            cell.Value = txtTime.Text;
-            row.Cells.Add(cell);
-            cell = new DataGridViewTextBoxCell();
-            cell.Value = cmbPlayer.Text;
-            row.Cells.Add(cell);
-
-            if (topPart)
-            {
-                dgvPoints.Rows.Insert(topPartIndex - 1, row);
-            }
-            else
-            {
-                dgvPoints.Rows.Add(row);
-                dgvPoints.FirstDisplayedScrollingRowIndex = dgvPoints.RowCount - 1;
-            }
+            addRow(createRow(data), topPart);
 
             lblDataSets.Text = dgvPoints.RowCount.ToString();
         }
@@ -241,17 +230,47 @@ namespace UHC_Tracker
         private void btnSave_Click(object sender, EventArgs e)
         {
             SaveFileDialog sfd = new SaveFileDialog();
-            sfd.FileName = "markers.json";
+            sfd.FileName = cmbPlayer.Text + ".json";
             sfd.DefaultExt = ".json";
             DialogResult result = sfd.ShowDialog();
 
-            System.IO.StreamWriter sw = new System.IO.StreamWriter(sfd.OpenFile());
-
-            foreach (DataGridViewRow row in dgvPoints.Rows) {
-                sw.WriteLine(printRow(row));
+            if (result == System.Windows.Forms.DialogResult.Cancel)
+            {
+                return;
             }
 
+
+            System.IO.StreamWriter sw = new System.IO.StreamWriter(sfd.OpenFile());
+            JsonTextWriter json = new JsonTextWriter(sw);
+            json.Formatting = Formatting.Indented;
+            json.WriteStartArray();
+            JsonSerializer jsonSer = new JsonSerializer();
+            jsonSer.Formatting = Formatting.None;
+            foreach (DataGridViewRow row in dgvPoints.Rows)
+            {
+                IDictionary<string, string> d = convertRow(row);
+                if (d != null)
+                {
+                    StringBuilder sb = new StringBuilder();
+                    System.IO.StringWriter swL = new System.IO.StringWriter(sb);
+                    jsonSer.Serialize(swL, d);
+
+                    json.Formatting = Formatting.Indented;
+                    json.WriteRawValue(sb.ToString());
+                }
+            }
+            json.WriteEndArray();
+            json.Close();
             sw.Close();
+
+
+            //System.IO.StreamWriter sw = new System.IO.StreamWriter(sfd.OpenFile());
+
+            //foreach (DataGridViewRow row in dgvPoints.Rows) {
+            //    sw.WriteLine(printRow(row));
+            //}
+
+            //sw.Close();
         }
 
         private string printRow(DataGridViewRow row)
@@ -287,6 +306,96 @@ namespace UHC_Tracker
             return sb.ToString();
         }
 
+        private IDictionary<string, string> convertRow(DataGridViewRow row)
+        {
+            Dictionary<string, string> data = new Dictionary<string, string>();
+
+            if (row.Cells[0].Value == null || ((string)row.Cells[0].Value) == "" ||
+                row.Cells[1].Value == null || ((string)row.Cells[1].Value) == "" ||
+                row.Cells[2].Value == null || ((string)row.Cells[2].Value) == "" ||
+                row.Cells[3].Value == null || ((string)row.Cells[3].Value) == "" ||
+                row.Cells[4].Value == null || ((string)row.Cells[4].Value) == "" ||
+                row.Cells[5].Value == null || ((string)row.Cells[5].Value) == "" ||
+                row.Cells[6].Value == null || ((string)row.Cells[6].Value) == "")
+            {
+                return null;
+            }
+
+            data.Add("seq",  row.Cells[0].Value.ToString());
+            data.Add("x",    row.Cells[1].Value.ToString());
+            data.Add("y",    row.Cells[2].Value.ToString());
+            data.Add("z",    row.Cells[3].Value.ToString());
+            data.Add("id",   row.Cells[4].Value.ToString());
+            data.Add("time", row.Cells[5].Value.ToString());
+            data.Add("msg",  row.Cells[6].Value.ToString());
+
+            if (((string)row.Cells[7].Value) != "" && row.Cells[4].Value != null && int.Parse(row.Cells[4].Value.ToString()) != 0)
+            {
+                data.Add("desc", row.Cells[7].Value.ToString());
+            }
+            
+
+            return data;
+        }
+
+        private DataGridViewRow createRow(IDictionary<string, string> data)
+        {
+            DataGridViewRow row = new DataGridViewRow();
+
+            DataGridViewCell cell;
+            cell = new DataGridViewTextBoxCell();
+            cell.Value = data["seq"];
+            row.Cells.Add(cell);
+
+            cell = new DataGridViewTextBoxCell();
+            cell.Value = data["x"];
+            row.Cells.Add(cell);
+            cell = new DataGridViewTextBoxCell();
+            cell.Value = data["y"];
+            row.Cells.Add(cell);
+            cell = new DataGridViewTextBoxCell();
+            cell.Value = data["z"];
+            row.Cells.Add(cell);
+
+            cell = new DataGridViewTextBoxCell();
+            cell.Value = data["id"];
+            row.Cells.Add(cell);
+            cell = new DataGridViewTextBoxCell();
+            cell.Value = data["time"];
+            row.Cells.Add(cell);
+            cell = new DataGridViewTextBoxCell();
+            cell.Value = data["msg"];
+            row.Cells.Add(cell);
+
+            if (data.ContainsKey("desc"))
+            {
+                cell = new DataGridViewTextBoxCell();
+                cell.Value = data["desc"];
+                row.Cells.Add(cell);
+            }
+
+            return row;
+        }
+
+        private int topPartIndex = 0;
+        private void addRow(DataGridViewRow row, bool topPart)
+        {
+            if (topPart)
+            {
+                if (topPartIndex > dgvPoints.Rows.Count)
+                {
+                    topPartIndex = dgvPoints.Rows.Count + 1;
+                }
+                dgvPoints.Rows.Insert(topPartIndex, row);
+                topPartIndex++;
+            }
+            else
+            {
+                dgvPoints.Rows.Add(row);
+                dgvPoints.FirstDisplayedScrollingRowIndex = dgvPoints.RowCount - 1;
+            }
+        }
+
         private void cmsPoints_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
             if (e.ClickedItem.Name == "tsmiDeleteRow")
@@ -299,6 +408,7 @@ namespace UHC_Tracker
                     {
                         dgvPoints.Rows.RemoveAt(index);
                         findNewSeq();
+                        lblDataSets.Text = dgvPoints.RowCount.ToString();
                     }
                 }
             }
@@ -306,6 +416,7 @@ namespace UHC_Tracker
 
         private void findNewSeq()
         {
+            topPartIndex = 0;
             int seq = -1;
             int mseq = -1;
             foreach (DataGridViewRow row in dgvPoints.Rows) {
@@ -321,6 +432,7 @@ namespace UHC_Tracker
                     {
                         int curSeq = int.Parse(row.Cells[0].Value.ToString());
                         if (mseq < curSeq) mseq = curSeq;
+                        topPartIndex++;
                     }
                 }
             }
@@ -329,17 +441,82 @@ namespace UHC_Tracker
             txtMSeq.Text = mseq.ToString();
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void addTime(int secs)
         {
-            txtTime.Text = (Math.Round(Double.Parse(txtTime.Text) + (Double.Parse(txtInc.Text) / 60), 2)).ToString();
+            double time = Double.Parse(txtTime.Text) + (Double.Parse(txtSecs.Text) / 60);
+            time += ((double) secs) / 60;
+            double mins = Math.Floor(time);
+            txtTime.Text = mins.ToString();
+            txtSecs.Text = (Math.Round((time - mins) * 60, 0)).ToString("0#");
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void btnIncrement_Click(object sender, EventArgs e)
+        {
+            addTime(int.Parse(txtInc.Text));
+        }
+
+        private void btnClear_Click(object sender, EventArgs e)
         {
             DialogResult result = MessageBox.Show("Do you really want to discard all entrys?", "Are you sure?", MessageBoxButtons.YesNo);
             if (result == System.Windows.Forms.DialogResult.Yes)
             {
+                topPartIndex = 0;
                 dgvPoints.Rows.Clear();
+                lblDataSets.Text = dgvPoints.RowCount.ToString();
+            }
+        }
+
+        private void btnConnect_Click(object sender, EventArgs e)
+        {
+            if (!DataSource.DS.isConnected)
+            {
+                DataSource.DS.Connect("localhost", 50191);
+            }
+            
+        }
+
+        private void btnLoad_Click(object sender, EventArgs e)
+        {
+            DialogResult result = MessageBox.Show("Do you really want to discard all entrys?", "Are you sure?", MessageBoxButtons.YesNo);
+            if (result == System.Windows.Forms.DialogResult.Yes)
+            {
+                topPartIndex = 0;
+                dgvPoints.Rows.Clear();
+            }
+            else
+            {
+                return;
+            }
+
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.FileName = cmbPlayer.Text + ".json";
+            ofd.DefaultExt = ".json";
+            result = ofd.ShowDialog();
+
+            if (result == System.Windows.Forms.DialogResult.Cancel)
+            {
+                return;
+            }
+
+            System.IO.StreamReader sr = new System.IO.StreamReader(ofd.OpenFile());
+            JsonTextReader json = new JsonTextReader(sr);
+            JsonSerializer jsonSer = new JsonSerializer();
+            List<IDictionary<string, string>> data = jsonSer.Deserialize<List<IDictionary<string, string>>>(json);
+            json.Close();
+            sr.Close();
+
+            foreach (IDictionary<string, string> d in data)
+            {
+                DataGridViewRow row = createRow(d);
+                int id = int.Parse(d["id"]);
+                if (id != 0)
+                {
+                    addRow(row, true);
+                }
+                else
+                {
+                    addRow(row, false);
+                }
             }
         }
     }
