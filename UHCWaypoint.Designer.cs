@@ -67,6 +67,7 @@
             this.clmDesc = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.cmsPoints = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsmiDeleteRow = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmidEditTime = new System.Windows.Forms.ToolStripMenuItem();
             this.label11 = new System.Windows.Forms.Label();
             this.txtMSeq = new System.Windows.Forms.TextBox();
             this.btnIncrement = new System.Windows.Forms.Button();
@@ -216,7 +217,6 @@
             this.txtMins.TabIndex = 5;
             this.txtMins.Text = "0";
             this.txtMins.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.txtMins.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtTime_KeyPress);
             // 
             // label7
             // 
@@ -339,14 +339,18 @@
             // 
             this.cmbPlayer.FormattingEnabled = true;
             this.cmbPlayer.Items.AddRange(new object[] {
+            "Adlington",
             "AnderZEL",
             "BdoubleO100",
             "Docm77",
             "Etho",
+            "GenerikB",
             "Guude",
             "just_defy",
             "kurtmac",
             "mcgamer",
+            "Mhykol",
+            "Millbee",
             "Nebris",
             "Pakratt0013",
             "PauseUnpause",
@@ -390,13 +394,12 @@
             this.dgvPoints.ContextMenuStrip = this.cmsPoints;
             this.dgvPoints.EnableHeadersVisualStyles = false;
             this.dgvPoints.Location = new System.Drawing.Point(12, 211);
-            this.dgvPoints.MultiSelect = false;
             this.dgvPoints.Name = "dgvPoints";
             this.dgvPoints.RowHeadersVisible = false;
             this.dgvPoints.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
             this.dgvPoints.RowTemplate.ReadOnly = true;
             this.dgvPoints.RowTemplate.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvPoints.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
+            this.dgvPoints.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvPoints.Size = new System.Drawing.Size(620, 127);
             this.dgvPoints.TabIndex = 21;
             this.dgvPoints.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.dgvPoints_DataError);
@@ -481,16 +484,24 @@
             // cmsPoints
             // 
             this.cmsPoints.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsmiDeleteRow});
+            this.tsmiDeleteRow,
+            this.tsmidEditTime});
             this.cmsPoints.Name = "cmsPoints";
-            this.cmsPoints.Size = new System.Drawing.Size(134, 26);
-            this.cmsPoints.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.cmsPoints_ItemClicked);
+            this.cmsPoints.Size = new System.Drawing.Size(153, 70);
             // 
             // tsmiDeleteRow
             // 
             this.tsmiDeleteRow.Name = "tsmiDeleteRow";
-            this.tsmiDeleteRow.Size = new System.Drawing.Size(133, 22);
+            this.tsmiDeleteRow.Size = new System.Drawing.Size(152, 22);
             this.tsmiDeleteRow.Text = "Delete Row";
+            this.tsmiDeleteRow.Click += new System.EventHandler(this.tsmiDeleteRow_Click);
+            // 
+            // tsmidEditTime
+            // 
+            this.tsmidEditTime.Name = "tsmidEditTime";
+            this.tsmidEditTime.Size = new System.Drawing.Size(152, 22);
+            this.tsmidEditTime.Text = "Edit Time";
+            this.tsmidEditTime.Click += new System.EventHandler(this.tsmidEditTime_Click);
             // 
             // label11
             // 
@@ -621,7 +632,6 @@
             this.txtOffMins.TabIndex = 7;
             this.txtOffMins.Text = "0";
             this.txtOffMins.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.txtOffMins.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtTime_KeyPress);
             // 
             // txtOffSecs
             // 
@@ -899,6 +909,7 @@
         private System.Windows.Forms.CheckBox chkOffNeg;
         private System.Windows.Forms.Button btnUpload;
         private System.Windows.Forms.Button btnDownload;
+        private System.Windows.Forms.ToolStripMenuItem tsmidEditTime;
     }
 }
 

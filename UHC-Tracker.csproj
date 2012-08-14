@@ -56,6 +56,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataSource.cs" />
+    <Compile Include="EditTime.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="EditTime.Designer.cs">
+      <DependentUpon>EditTime.cs</DependentUpon>
+    </Compile>
     <Compile Include="EventTcp.cs" />
     <Compile Include="UHCWaypoint.cs">
       <SubType>Form</SubType>
@@ -65,6 +71,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="EditTime.resx">
+      <DependentUpon>EditTime.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UHCWaypoint.resx">
       <DependentUpon>UHCWaypoint.cs</DependentUpon>
     </EmbeddedResource>

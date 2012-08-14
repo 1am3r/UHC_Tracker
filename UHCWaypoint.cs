@@ -19,9 +19,13 @@ namespace UHC_Tracker
 {
     public partial class UHCWaypoint : Form, DataSource.DSHandlerPlayerLocation, DataSource.DSHandlerConnectionStatusChanged
     {
+        private EditTime dlgEditTime;
         public UHCWaypoint()
         {
             InitializeComponent();
+
+            dlgEditTime = new EditTime();
+            dlgEditTime.Hide();
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -106,7 +110,7 @@ namespace UHC_Tracker
             }
         }
 
-        private void txtTime_KeyPress(object sender, KeyPressEventArgs e)
+        public static void txtTime_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) && e.KeyChar != '.')
             {
@@ -444,24 +448,6 @@ namespace UHC_Tracker
             }
         }
 
-        private void cmsPoints_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
-        {
-            if (e.ClickedItem.Name == "tsmiDeleteRow")
-            {
-                if (dgvPoints.SelectedCells.Count > 0)
-                {
-                    int index = dgvPoints.SelectedCells[0].RowIndex;
-
-                    if (dgvPoints.RowCount - 1 > index)
-                    {
-                        dgvPoints.Rows.RemoveAt(index);
-                        findNewSeq();
-                        lblDataSets.Text = (dgvPoints.RowCount - 1).ToString();
-                    }
-                }
-            }
-        }
-
         private void findNewSeq()
         {
             topPartIndex = 0;
@@ -490,6 +476,11 @@ namespace UHC_Tracker
             seq++; mseq++;
             txtSeq.Text = seq.ToString();
             txtMSeq.Text = mseq.ToString();
+
+            double offset = double.Parse(txtOffMins.Text) + (double.Parse(txtOffSecs.Text) / 60);
+            offset = (chkOffNeg.Checked ? -offset : offset);
+            time += offset;
+
             double mins = Math.Floor(time);
             txtMins.Text = ((int) mins).ToString();
             txtSecs.Text = (Math.Round((time - mins) * 60, 0)).ToString("0#");
@@ -670,6 +661,36 @@ namespace UHC_Tracker
             DropNet.Models.MetaData mdata =  dropClient.UploadFile("/", cmbPlayer.Text + ".json." + timeStr, data);
 
             json.Close();
+        }
+
+        private void tsmidEditTime_Click(object sender, EventArgs e)
+        {
+            if (dlgEditTime.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                foreach (DataGridViewRow row in dgvPoints.SelectedRows)
+                {
+                    double time = double.Parse(row.Cells[5].Value.ToString());
+                    time += dlgEditTime.time;
+                    row.Cells[5].Value = Math.Round(time, 2).ToString();
+                }
+            }
+        }
+
+        private void tsmiDeleteRow_Click(object sender, EventArgs e)
+        {
+            if (dgvPoints.SelectedRows.Count > 0)
+            {
+                foreach (DataGridViewRow row in dgvPoints.SelectedRows)
+                {
+                    if (dgvPoints.RowCount - 1 > 0)
+                    {
+                        dgvPoints.Rows.Remove(row);
+                    }
+                }
+
+                findNewSeq();
+                lblDataSets.Text = (dgvPoints.RowCount - 1).ToString();
+            }
         }
     }
 
