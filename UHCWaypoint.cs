@@ -202,7 +202,7 @@ namespace UHC_Tracker
             } 
             else if (sender.Equals(btnSpotted))
             {
-                id = "5";
+                id = "6";
             }
             else if (sender.Equals(btnDeath))
             {
@@ -589,7 +589,7 @@ namespace UHC_Tracker
             try
             {
                 WebClient dataClient = new WebClient();
-                System.IO.Stream dataStrm = dataClient.OpenRead("http://88.198.183.184/uhc7/data/" + cmbPlayer.Text + ".json");
+                System.IO.Stream dataStrm = dataClient.OpenRead("http://88.198.183.184/uhc8/data/" + cmbPlayer.Text + ".json");
 
                 topPartIndex = 0;
                 dgvPoints.Rows.Clear();

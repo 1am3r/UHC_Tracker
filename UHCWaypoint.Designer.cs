@@ -339,12 +339,12 @@
             // 
             this.cmbPlayer.FormattingEnabled = true;
             this.cmbPlayer.Items.AddRange(new object[] {
-            "Adlington",
+            "adlington",
             "AnderZEL",
             "BdoubleO100",
             "Docm77",
             "Etho",
-            "GenerikB",
+            "generikb",
             "Guude",
             "just_defy",
             "kurtmac",
