@@ -187,34 +187,38 @@ namespace UHC_Tracker
             string id = "0";
             string seq = txtSeq.Text;
             bool topPart = true;
+            string desc = "";
 
-            if (sender.Equals(btnHouse))
-            {
-                id = "2";
-            } 
-            else if (sender.Equals(btnPortal))
-            {
-                id = "3";
-            } 
-            else if (sender.Equals(btnFight))
-            {
-                id = "5";
-            } 
-            else if (sender.Equals(btnSpotted))
-            {
-                id = "6";
-            }
-            else if (sender.Equals(btnDeath))
-            {
-                id = "1";
-            }
-            
             if (sender.Equals(btnWaypoint))
             {
                 topPart = false;
             }
             else
             {
+                AddDesc descFrm = new AddDesc();
+                descFrm.ShowDialog();
+                desc = descFrm.desc;
+
+                if (sender.Equals(btnHouse))
+                {
+                    id = "2";
+                } 
+                else if (sender.Equals(btnPortal))
+                {
+                    id = "3";
+                } 
+                else if (sender.Equals(btnFight))
+                {
+                    id = "5";
+                } 
+                else if (sender.Equals(btnSpotted))
+                {
+                    id = "6";
+                }
+                else if (sender.Equals(btnDeath))
+                {
+                    id = "1";
+                }
                 seq = txtMSeq.Text;
                 txtMSeq.Text = (int.Parse(txtMSeq.Text) + 1).ToString();
             }
@@ -236,6 +240,7 @@ namespace UHC_Tracker
             data.Add("id", id.ToString());
             data.Add("time", Math.Round(time, 2).ToString());
             data.Add("msg", cmbPlayer.Text);
+            data.Add("desc", desc);
 
             addRow(createRow(data), topPart);
 
@@ -661,6 +666,14 @@ namespace UHC_Tracker
             DropNet.Models.MetaData mdata =  dropClient.UploadFile("/", cmbPlayer.Text + ".json." + timeStr, data);
 
             json.Close();
+            if (mdata != null)
+            {
+                MessageBox.Show("Data successfully uploaded");
+            }
+            else
+            {
+                MessageBox.Show("Uploading data failed!");
+            }
         }
 
         private void tsmidEditTime_Click(object sender, EventArgs e)
