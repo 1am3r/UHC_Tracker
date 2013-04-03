@@ -705,6 +705,37 @@ namespace UHC_Tracker
                 lblDataSets.Text = (dgvPoints.RowCount - 1).ToString();
             }
         }
+
+        private void btnLoadPlayerlist_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                WebClient dataClient = new WebClient();
+                System.IO.Stream dataStrm = dataClient.OpenRead("http://88.198.183.184/uhc/players.json");
+                System.IO.StreamReader sr = new System.IO.StreamReader(dataStrm);
+                JsonTextReader json = new JsonTextReader(sr);
+                JsonSerializer jsonSer = new JsonSerializer();
+                List<IDictionary<string, string>> data = jsonSer.Deserialize<List<IDictionary<string, string>>>(json);
+                json.Close();
+                sr.Close();
+
+                foreach (IDictionary<string, string> d in data)
+                {
+                    string name = d["name"];
+                    if (name != "")
+                    {
+                        cmbPlayer.Items.Add(name);
+                    }
+                }
+                cmbPlayer.SelectedIndex = 0;
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Couldn't download data! ex:" + ex.Message);
+                return;
+            }
+        }
     }
 
     public class RowData

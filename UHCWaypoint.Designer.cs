@@ -93,6 +93,7 @@
             this.btnClear = new System.Windows.Forms.Button();
             this.btnSave = new System.Windows.Forms.Button();
             this.chkOffNeg = new System.Windows.Forms.CheckBox();
+            this.btnLoadPlayerlist = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dgvPoints)).BeginInit();
             this.cmsPoints.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -338,26 +339,6 @@
             // cmbPlayer
             // 
             this.cmbPlayer.FormattingEnabled = true;
-            this.cmbPlayer.Items.AddRange(new object[] {
-            "adlington",
-            "AnderZEL",
-            "BdoubleO100",
-            "Docm77",
-            "Etho",
-            "generikb",
-            "Guude",
-            "just_defy",
-            "kurtmac",
-            "mcgamer",
-            "Mhykol",
-            "Millbee",
-            "Nebris",
-            "Pakratt0013",
-            "PauseUnpause",
-            "Pyro_0",
-            "VintageBeef",
-            "W92Baj",
-            "Zisteau"});
             this.cmbPlayer.Location = new System.Drawing.Point(57, 5);
             this.cmbPlayer.Name = "cmbPlayer";
             this.cmbPlayer.Size = new System.Drawing.Size(184, 21);
@@ -778,11 +759,22 @@
             this.chkOffNeg.Text = "Negative";
             this.chkOffNeg.UseVisualStyleBackColor = true;
             // 
+            // btnLoadPlayerlist
+            // 
+            this.btnLoadPlayerlist.Location = new System.Drawing.Point(247, 3);
+            this.btnLoadPlayerlist.Name = "btnLoadPlayerlist";
+            this.btnLoadPlayerlist.Size = new System.Drawing.Size(95, 23);
+            this.btnLoadPlayerlist.TabIndex = 53;
+            this.btnLoadPlayerlist.Text = "Load Playerlist";
+            this.btnLoadPlayerlist.UseVisualStyleBackColor = true;
+            this.btnLoadPlayerlist.Click += new System.EventHandler(this.btnLoadPlayerlist_Click);
+            // 
             // UHCWaypoint
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(644, 435);
+            this.Controls.Add(this.btnLoadPlayerlist);
             this.Controls.Add(this.chkOffNeg);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.txtOffMins);
@@ -910,6 +902,7 @@
         private System.Windows.Forms.Button btnUpload;
         private System.Windows.Forms.Button btnDownload;
         private System.Windows.Forms.ToolStripMenuItem tsmidEditTime;
+        private System.Windows.Forms.Button btnLoadPlayerlist;
     }
 }
 
