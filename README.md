@@ -5,6 +5,9 @@ When started after Minecraft it connects to the Minecraft Automap Mod and querie
 the player location every 250ms. These locations can now easily be saved to a JSON 
 formatted file (which is what I use in my maps for displaying the movements).
 
+You can download the Binarys from [here]( http://88.198.183.184/uhc/UHC-Tracker_V0.4.4.zip )
+Latest Version 0.4.4
+
 As I use code from Minecraft Automap, and it is licensed under the [Ms-PL]( http://www.microsoft.com/opensource/licenses.mspx#Ms-PL), this program is also licensed under the [Ms-PL]( http://www.microsoft.com/opensource/licenses.mspx#Ms-PL). At least for now ;-)
 
 
