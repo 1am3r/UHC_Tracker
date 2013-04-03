@@ -37,7 +37,6 @@ namespace UHC_Tracker
             DataSource.DS.InitializePlayerLocation(this);
             DataSource.DS.Connect("localhost", 50191);
 
-            cmbPlayer.SelectedIndex = 0;
             cmdEpisode.SelectedIndex = 0;
         }
 
@@ -708,6 +707,7 @@ namespace UHC_Tracker
 
         private void btnLoadPlayerlist_Click(object sender, EventArgs e)
         {
+            cmbPlayer.Items.Clear();
             try
             {
                 WebClient dataClient = new WebClient();
