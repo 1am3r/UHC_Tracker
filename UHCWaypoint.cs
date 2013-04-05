@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -20,6 +21,9 @@ namespace UHC_Tracker
     public partial class UHCWaypoint : Form, DataSource.DSHandlerPlayerLocation, DataSource.DSHandlerConnectionStatusChanged
     {
         private EditTime dlgEditTime;
+        KeyboardHook hook = new KeyboardHook();
+        bool isClosing = false;
+
         public UHCWaypoint()
         {
             InitializeComponent();
@@ -31,13 +35,22 @@ namespace UHC_Tracker
         private void Form1_Load(object sender, EventArgs e)
         {
             System.Threading.Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.CreateSpecificCulture("en-GB");
-            test.updateTimer = timer1;
+
+            hook.KeyPressed += new EventHandler<KeyPressedEventArgs>(hook_KeyPressed);
+            hook.RegisterHotKey(UHC_Tracker.ModifierKeys.Control , Keys.F12);
 
             DataSource.DS.InitializeConnectionStatusChanged(this);
             DataSource.DS.InitializePlayerLocation(this);
             DataSource.DS.Connect("localhost", 50191);
 
             cmdEpisode.SelectedIndex = 0;
+
+            timer1.Start();
+        }
+
+        void hook_KeyPressed(object sender, KeyPressedEventArgs e)
+        {
+            btnWaypoint.PerformClick();
         }
 
         public void ConnectionStatusChanged(DataSource.ConnectionStatus newStatus)
@@ -45,39 +58,35 @@ namespace UHC_Tracker
             switch (newStatus)
             {
                 case DataSource.ConnectionStatus.Idle:
-                    timer1.Enabled = false;
                     lblStatus.SetPropertyThreadSafe(() => lblStatus.Text, "Not Connected");
                     btnConnect.SetPropertyThreadSafe(() => btnConnect.Text, "Connect");
                     btnConnect.SetPropertyThreadSafe(() => btnConnect.Enabled, true);
                     break;
                 case DataSource.ConnectionStatus.Connecting:
-                    timer1.Enabled = false;
-                    timer1.Start();
                     lblStatus.SetPropertyThreadSafe(() => lblStatus.Text, "Connecting");
                     btnConnect.SetPropertyThreadSafe(() => btnConnect.Text, "Connect");
                     btnConnect.SetPropertyThreadSafe(() => btnConnect.Enabled, false);
                     break;
                 case DataSource.ConnectionStatus.Connected:
-                    timer1.Enabled = true;
                     lblStatus.SetPropertyThreadSafe(() => lblStatus.Text, "Connected");
                     btnConnect.SetPropertyThreadSafe(() => btnConnect.Text, "Connect");
                     btnConnect.SetPropertyThreadSafe(() => btnConnect.Enabled, false);
                     break;
                 case DataSource.ConnectionStatus.Refused:
-                    timer1.Enabled = false;
-                    lblStatus.SetPropertyThreadSafe(() => lblStatus.Text, "Connection refused");
+                    lblStatus.SetPropertyThreadSafe(() => lblStatus.Text, "Connection\nrefused");
                     btnConnect.SetPropertyThreadSafe(() => btnConnect.Text, "Connect");
                     btnConnect.SetPropertyThreadSafe(() => btnConnect.Enabled, true);
                     break;
                 case DataSource.ConnectionStatus.Disconnected:
-                    timer1.Enabled = false;
-                    timer1.Stop();
                     lblStatus.SetPropertyThreadSafe(() => lblStatus.Text, "Disconnected");
                     btnConnect.SetPropertyThreadSafe(() => btnConnect.Text, "Connect");
                     btnConnect.SetPropertyThreadSafe(() => btnConnect.Enabled, true);
+                    if (!this.isClosing)
+                    {
+                        this.Invoke(new Action(() => { MessageBox.Show(this, "Disconnected!", "Disconnected", MessageBoxButtons.OK); }));
+                    }
                     break;
                 default:
-                    timer1.Enabled = false;
                     lblStatus.SetPropertyThreadSafe(() => lblStatus.Text, "Unknown Connection Status");
                     break;
             }
@@ -96,8 +105,8 @@ namespace UHC_Tracker
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            timer1.Enabled = false;
             timer1.Stop();
+            isClosing = true;
             DataSource.DS.ShutDown();
         }
 
@@ -149,13 +158,11 @@ namespace UHC_Tracker
         {
             if (timer1.Enabled)
             {
-                timer1.Enabled = false;
                 timer1.Stop();
                 btnUpdate.Text = "Start Updating";
             }
             else
             {
-                timer1.Enabled = true;
                 timer1.Start();
                 btnUpdate.Text = "Stop Updating";
             }
@@ -593,7 +600,7 @@ namespace UHC_Tracker
             try
             {
                 WebClient dataClient = new WebClient();
-                System.IO.Stream dataStrm = dataClient.OpenRead("http://88.198.183.184/uhc8/data/" + cmbPlayer.Text + ".json");
+                System.IO.Stream dataStrm = dataClient.OpenRead("http://88.198.183.184/uhc9/data/" + cmbPlayer.Text + ".json");
 
                 topPartIndex = 0;
                 dgvPoints.Rows.Clear();
@@ -753,15 +760,9 @@ namespace UHC_Tracker
     public static class test
     {
         private delegate void SetPropertyThreadSafeDelegate<TResult>(Control @this, Expression<Func<TResult>> property, TResult value);
-        public static Timer updateTimer;
 
         public static void SetPropertyThreadSafe<TResult>(this Control @this, Expression<Func<TResult>> property, TResult value)
         {
-            if (updateTimer != null && updateTimer.Enabled == false)
-            {
-                return;
-            }
-
             var propertyInfo = (property.Body as MemberExpression).Member as PropertyInfo;
 
             if (propertyInfo == null ||
@@ -781,4 +782,147 @@ namespace UHC_Tracker
             }
         }
     }
+        
+    public sealed class KeyboardHook : IDisposable
+    {
+        // Registers a hot key with Windows.
+        [DllImport("user32.dll")]
+        private static extern bool RegisterHotKey(IntPtr hWnd, int id, uint fsModifiers, uint vk);
+        // Unregisters the hot key with Windows.
+        [DllImport("user32.dll")]
+        private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
+
+        /// <summary>
+        /// Represents the window that is used internally to get the messages.
+        /// </summary>
+        private class Window : NativeWindow, IDisposable
+        {
+            private static int WM_HOTKEY = 0x0312;
+
+            public Window()
+            {
+                // create the handle for the window.
+                this.CreateHandle(new CreateParams());
+            }
+
+            /// <summary>
+            /// Overridden to get the notifications.
+            /// </summary>
+            /// <param name="m"></param>
+            protected override void WndProc(ref Message m)
+            {
+                base.WndProc(ref m);
+
+                // check if we got a hot key pressed.
+                if (m.Msg == WM_HOTKEY)
+                {
+                    // get the keys.
+                    Keys key = (Keys)(((int)m.LParam >> 16) & 0xFFFF);
+                    ModifierKeys modifier = (ModifierKeys)((int)m.LParam & 0xFFFF);
+
+                    // invoke the event to notify the parent.
+                    if (KeyPressed != null)
+                        KeyPressed(this, new KeyPressedEventArgs(modifier, key));
+                }
+            }
+
+            public event EventHandler<KeyPressedEventArgs> KeyPressed;
+
+            #region IDisposable Members
+
+            public void Dispose()
+            {
+                this.DestroyHandle();
+            }
+
+            #endregion
+        }
+
+        private Window _window = new Window();
+        private int _currentId;
+
+        public KeyboardHook()
+        {
+            // register the event of the inner native window.
+            _window.KeyPressed += delegate(object sender, KeyPressedEventArgs args)
+            {
+                if (KeyPressed != null)
+                    KeyPressed(this, args);
+            };
+        }
+
+        /// <summary>
+        /// Registers a hot key in the system.
+        /// </summary>
+        /// <param name="modifier">The modifiers that are associated with the hot key.</param>
+        /// <param name="key">The key itself that is associated with the hot key.</param>
+        public void RegisterHotKey(ModifierKeys modifier, Keys key)
+        {
+            // increment the counter.
+            _currentId = _currentId + 1;
+
+            // register the hot key.
+            if (!RegisterHotKey(_window.Handle, _currentId, (uint)modifier, (uint)key))
+                throw new InvalidOperationException("Couldn’t register the hot key.");
+        }
+
+        /// <summary>
+        /// A hot key has been pressed.
+        /// </summary>
+        public event EventHandler<KeyPressedEventArgs> KeyPressed;
+
+        #region IDisposable Members
+
+        public void Dispose()
+        {
+            // unregister all the registered hot keys.
+            for (int i = _currentId; i > 0; i--)
+            {
+                UnregisterHotKey(_window.Handle, i);
+            }
+
+            // dispose the inner native window.
+            _window.Dispose();
+        }
+
+        #endregion
+    }
+
+    /// <summary>
+    /// Event Args for the event that is fired after the hot key has been pressed.
+    /// </summary>
+    public class KeyPressedEventArgs : EventArgs
+    {
+        private ModifierKeys _modifier;
+        private Keys _key;
+
+        internal KeyPressedEventArgs(ModifierKeys modifier, Keys key)
+        {
+            _modifier = modifier;
+            _key = key;
+        }
+
+        public ModifierKeys Modifier
+        {
+            get { return _modifier; }
+        }
+
+        public Keys Key
+        {
+            get { return _key; }
+        }
+    }
+
+    /// <summary>
+    /// The enumeration of possible modifiers.
+    /// </summary>
+    [Flags]
+    public enum ModifierKeys : uint
+    {
+        Alt = 1,
+        Control = 2,
+        Shift = 4,
+        Win = 8
+    }
+
 }
