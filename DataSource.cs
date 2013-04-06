@@ -17,7 +17,8 @@ namespace DataSource
 		//private static int LONG_BYTES = 8;
 		private static int FLOAT_BYTES = 4;
 		private static int DOUBLE_BYTES = 8;
-		private const byte GET_PLAYER_LOCATION = 0;
+        private const byte GET_PLAYER_LOCATION = 0;
+        private const byte GET_WORLD_PATH = 20;
 
 		/// <summary>
 		/// True if connected.
@@ -36,6 +37,7 @@ namespace DataSource
 		}
 		private static bool shuttingDown = false;
 		protected static BytesEventTcpClient client;
+
 		protected static DSHandlerPlayerLocation playerLocationHandler;
 		public static void InitializePlayerLocation(DSHandlerPlayerLocation handlerparam)
 		{
@@ -46,6 +48,11 @@ namespace DataSource
 		{
 			connectionStatusChangedHandler = handlerparam;
 		}
+        protected static DSHandlerWorldPath worldPathHandler;
+        public static void InitializeWorldPath(DSHandlerWorldPath handlerparam)
+        {
+            worldPathHandler = handlerparam;
+        }
 
 		private static void ConnectionStatusChanged(ConnectionStatus connectionStatus)
 		{
@@ -63,6 +70,17 @@ namespace DataSource
 				client.Send(new byte[] { GET_PLAYER_LOCATION });
 			}
 		}
+
+        /// <summary>
+        /// Requests from the Minecraft Client the player's location.
+        /// </summary>
+        public static void GetWorldPath()
+        {
+            if (isConnected)
+            {
+                client.Send(new byte[] { GET_WORLD_PATH });
+            }
+        }
 
 		//private static System.Diagnostics.Stopwatch sw;
 		/// <summary>
@@ -86,7 +104,11 @@ namespace DataSource
 				//}
 				HandlePlayerLocation(message);
 				//sw.Start();
-			}
+            }
+            else if (messageType == GET_WORLD_PATH)
+            {
+                HandleWorldPath(message);
+            }
 		}
 
 		private static void HandlePlayerLocation(byte[] message)
@@ -145,6 +167,61 @@ namespace DataSource
 				return;
 			}
 		}
+
+        private static void HandleWorldPath(byte[] message)
+        {
+            string worldInfo = ByteConverter.ToString(message, 1, message.Length - 1);
+            if (worldInfo == "Unknown")
+                if (worldPathHandler != null)
+                    try
+                    {
+                        worldPathHandler.WorldPathReceived("Unknown", 0, "Unknown", 0, 0, 0);
+                    }
+                    catch (Exception ex)
+                    {
+                        File.AppendAllText("errordump.txt", "\r\nAn error occurred while handling a world path.\r\n" + ex.ToString() + "\r\n");
+                        System.Windows.Forms.MessageBox.Show("An error occurred while handling a world path." + Environment.NewLine + ex.Message + Environment.NewLine + ex.StackTrace);
+                    }
+
+            string[] parts = worldInfo.Split('|');
+            if (parts.Length < 6)
+                return;
+            else if (parts.Length > 6)
+            {
+                // In case the path SOMEHOW had a | in it, the string array will be messed up.  Maybe I am just paranoid.
+                StringBuilder sbPathParts = new StringBuilder();
+                for (int i = 0; i <= parts.Length - 6; i++)
+                    sbPathParts.Append(parts[i]);
+                string[] partsNew = new string[6];
+                partsNew[0] = sbPathParts.ToString();
+                for (int i = parts.Length - 5, j = 1; i < parts.Length; i++, j++)
+                    partsNew[j] = parts[i];
+                parts = partsNew;
+            }
+            int dimension;
+            if (!int.TryParse(parts[1], out dimension))
+                dimension = 0;
+            int spawnX;
+            if (!int.TryParse(parts[3], out spawnX))
+                spawnX = 0;
+            int spawnY;
+            if (!int.TryParse(parts[4], out spawnY))
+                spawnY = 0;
+            int spawnZ;
+            if (!int.TryParse(parts[5], out spawnZ))
+                spawnZ = 0;
+            if (worldPathHandler != null)
+                try
+                {
+                    worldPathHandler.WorldPathReceived(parts[0], dimension, parts[2], spawnX, spawnY, spawnZ);
+                }
+                catch (Exception ex)
+                {
+                    File.AppendAllText("errordump.txt", "\r\nAn error occurred while handling a world path.\r\n" + ex.ToString() + "\r\n");
+                    System.Windows.Forms.MessageBox.Show("An error occurred while handling a world path." + Environment.NewLine + ex.Message + Environment.NewLine + ex.StackTrace);
+                }
+        }
+
 		/// <summary>
 		/// Checks PermissionManager and adds the entity to the list if allowed.
 		/// </summary>
@@ -236,6 +313,10 @@ namespace DataSource
     public interface DSHandlerConnectionStatusChanged
     {
         void ConnectionStatusChanged(ConnectionStatus newStatus);
+    }
+    public interface DSHandlerWorldPath
+    {
+        void WorldPathReceived(string worldPath, int dimension, string worldName, int spawnX, int spawnY, int spawnZ);
     }
 
     public class Entity

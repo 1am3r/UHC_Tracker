@@ -18,7 +18,7 @@ using DropNet.Authenticators;
 
 namespace UHC_Tracker
 {
-    public partial class UHCWaypoint : Form, DataSource.DSHandlerPlayerLocation, DataSource.DSHandlerConnectionStatusChanged
+    public partial class UHCWaypoint : Form, DataSource.DSHandlerPlayerLocation, DataSource.DSHandlerConnectionStatusChanged, DataSource.DSHandlerWorldPath
     {
         private EditTime dlgEditTime;
         KeyboardHook hook = new KeyboardHook();
@@ -41,6 +41,7 @@ namespace UHC_Tracker
 
             DataSource.DS.InitializeConnectionStatusChanged(this);
             DataSource.DS.InitializePlayerLocation(this);
+            DataSource.DS.InitializeWorldPath(this);
             DataSource.DS.Connect("localhost", 50191);
 
             cmdEpisode.SelectedIndex = 0;
@@ -103,6 +104,11 @@ namespace UHC_Tracker
             }
         }
 
+        public void WorldPathReceived(string worldPath, int dimension, string worldName, int spawnX, int spawnY, int spawnZ)
+        {
+            txtDim.SetPropertyThreadSafe(() => txtDim.Text, dimension.ToString());
+        }
+
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             timer1.Stop();
@@ -115,6 +121,7 @@ namespace UHC_Tracker
             if (DataSource.DS.isConnected && timer1.Enabled)
             {
                 DataSource.DS.GetPlayerLocation();
+                DataSource.DS.GetWorldPath();
             }
         }
 
@@ -245,6 +252,7 @@ namespace UHC_Tracker
             data.Add("z", txtZ.Text);
             data.Add("id", id.ToString());
             data.Add("time", Math.Round(time, 2).ToString());
+            data.Add("dim", txtDim.Text);
             data.Add("msg", cmbPlayer.Text);
             data.Add("desc", desc);
 
@@ -322,12 +330,13 @@ namespace UHC_Tracker
             sb.Append("\"y\":"      + row.Cells[2].Value + ", ");
             sb.Append("\"z\":"      + row.Cells[3].Value + ", ");
             sb.Append("\"id\":"     + row.Cells[4].Value + ", ");
-            sb.Append("\"time\":"   + row.Cells[5].Value + ", ");
-            sb.Append("\"msg\":\""  + row.Cells[6].Value + "\" ");
+            sb.Append("\"time\":" + row.Cells[5].Value + ", ");
+            sb.Append("\"dim\":" + row.Cells[6].Value + ", ");
+            sb.Append("\"msg\":\""  + row.Cells[7].Value + "\" ");
 
-            if (((string)row.Cells[7].Value) != "" && row.Cells[4].Value != null && int.Parse(row.Cells[4].Value.ToString()) != 0)
+            if (((string)row.Cells[8].Value) != "" && row.Cells[4].Value != null && int.Parse(row.Cells[4].Value.ToString()) != 0)
             {
-                sb.Append(", \"desc\":\"" + row.Cells[7].Value + "\" ");
+                sb.Append(", \"desc\":\"" + row.Cells[8].Value + "\" ");
             }
 
             sb.Append("},");
@@ -344,7 +353,8 @@ namespace UHC_Tracker
                 row.Cells[3].Value == null || ((string)row.Cells[3].Value) == "" ||
                 row.Cells[4].Value == null || ((string)row.Cells[4].Value) == "" ||
                 row.Cells[5].Value == null || ((string)row.Cells[5].Value) == "" ||
-                row.Cells[6].Value == null || ((string)row.Cells[6].Value) == "")
+                row.Cells[6].Value == null || ((string)row.Cells[6].Value) == "" ||
+                row.Cells[7].Value == null || ((string)row.Cells[7].Value) == "")
             {
                 return null;
             }
@@ -355,15 +365,16 @@ namespace UHC_Tracker
             rd.z = int.Parse(row.Cells[3].Value.ToString());
             rd.id = int.Parse(row.Cells[4].Value.ToString());
             rd.time = double.Parse(row.Cells[5].Value.ToString());
-            rd.msg = row.Cells[6].Value.ToString();
+            rd.dim = int.Parse(row.Cells[6].Value.ToString());
+            rd.msg = row.Cells[7].Value.ToString();
 
             if (row.Cells[4].Value != null && int.Parse(row.Cells[4].Value.ToString()) != 0)
             {
-                if (row.Cells[7].Value == null)
+                if (row.Cells[8].Value == null)
                 {
-                    row.Cells[7].Value = "";
+                    row.Cells[8].Value = "";
                 }
-                rd.desc = row.Cells[7].Value.ToString();
+                rd.desc = row.Cells[8].Value.ToString();
             }
 
             return rd;
@@ -379,7 +390,8 @@ namespace UHC_Tracker
                 row.Cells[3].Value == null || ((string)row.Cells[3].Value) == "" ||
                 row.Cells[4].Value == null || ((string)row.Cells[4].Value) == "" ||
                 row.Cells[5].Value == null || ((string)row.Cells[5].Value) == "" ||
-                row.Cells[6].Value == null || ((string)row.Cells[6].Value) == "")
+                row.Cells[6].Value == null || ((string)row.Cells[6].Value) == "" ||
+                row.Cells[7].Value == null || ((string)row.Cells[7].Value) == "")
             {
                 return null;
             }
@@ -390,11 +402,12 @@ namespace UHC_Tracker
             data.Add("z",    row.Cells[3].Value.ToString());
             data.Add("id",   row.Cells[4].Value.ToString());
             data.Add("time", row.Cells[5].Value.ToString());
-            data.Add("msg",  row.Cells[6].Value.ToString());
+            data.Add("dim", row.Cells[6].Value.ToString());
+            data.Add("msg",  row.Cells[7].Value.ToString());
 
-            if (((string)row.Cells[7].Value) != "" && row.Cells[4].Value != null && int.Parse(row.Cells[4].Value.ToString()) != 0)
+            if (((string)row.Cells[8].Value) != "" && row.Cells[4].Value != null && int.Parse(row.Cells[4].Value.ToString()) != 0)
             {
-                data.Add("desc", row.Cells[7].Value.ToString());
+                data.Add("desc", row.Cells[8].Value.ToString());
             }
             
 
@@ -425,6 +438,16 @@ namespace UHC_Tracker
             row.Cells.Add(cell);
             cell = new DataGridViewTextBoxCell();
             cell.Value = data["time"];
+            row.Cells.Add(cell);
+            cell = new DataGridViewTextBoxCell();
+            try
+            {
+                cell.Value = data["dim"];
+            }
+            catch (Exception ex)
+            {
+                cell.Value = "0";
+            }
             row.Cells.Add(cell);
             cell = new DataGridViewTextBoxCell();
             cell.Value = data["msg"];
@@ -753,6 +776,7 @@ namespace UHC_Tracker
         public int z  { get; set; }
         public int id { get; set; }
         public double time { get; set; }
+        public int dim { get; set; }
         public string msg { get; set; }
         public string desc { get; set; }
     }
