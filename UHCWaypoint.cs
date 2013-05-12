@@ -359,7 +359,17 @@ namespace UHC_Tracker
                 return null;
             }
 
-            rd.seq = int.Parse(row.Cells[0].Value.ToString());
+            if (row.Index < topPartIndex)
+            {
+                rd.seq = row.Index;
+            }
+            else
+            {
+                rd.seq = row.Index - topPartIndex;
+            }
+
+
+            // rd.seq = int.Parse(row.Cells[0].Value.ToString());
             rd.x = int.Parse(row.Cells[1].Value.ToString());
             rd.y = int.Parse(row.Cells[2].Value.ToString());
             rd.z = int.Parse(row.Cells[3].Value.ToString());
@@ -623,7 +633,7 @@ namespace UHC_Tracker
             try
             {
                 WebClient dataClient = new WebClient();
-                System.IO.Stream dataStrm = dataClient.OpenRead("http://88.198.183.184/uhc9/data/" + cmbPlayer.Text + ".json");
+                System.IO.Stream dataStrm = dataClient.OpenRead("http://88.198.183.184/uhc10/data/" + cmbPlayer.Text + ".json");
 
                 topPartIndex = 0;
                 dgvPoints.Rows.Clear();
