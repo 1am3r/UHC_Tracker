@@ -57,16 +57,23 @@
             this.cmbPlayer = new System.Windows.Forms.ComboBox();
             this.label10 = new System.Windows.Forms.Label();
             this.dgvPoints = new System.Windows.Forms.DataGridView();
+            this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column6 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column8 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column7 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.clmDesc = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.cmsPoints = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsmiDeleteRow = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmidEditTime = new System.Windows.Forms.ToolStripMenuItem();
             this.label11 = new System.Windows.Forms.Label();
             this.txtMSeq = new System.Windows.Forms.TextBox();
             this.btnIncrement = new System.Windows.Forms.Button();
-            this.cmdEpisode = new System.Windows.Forms.ComboBox();
+            this.cmbEpisode = new System.Windows.Forms.ComboBox();
             this.label12 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.textBox2 = new System.Windows.Forms.TextBox();
             this.label13 = new System.Windows.Forms.Label();
             this.label14 = new System.Windows.Forms.Label();
             this.txtSecs = new System.Windows.Forms.TextBox();
@@ -88,15 +95,14 @@
             this.btnLoadPlayerlist = new System.Windows.Forms.Button();
             this.txtDim = new System.Windows.Forms.TextBox();
             this.label18 = new System.Windows.Forms.Label();
-            this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column6 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column8 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column7 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.clmDesc = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cmdUseStart = new System.Windows.Forms.Button();
+            this.cmdUseEnd = new System.Windows.Forms.Button();
+            this.txtEndMins = new System.Windows.Forms.TextBox();
+            this.txtEndSecs = new System.Windows.Forms.TextBox();
+            this.label19 = new System.Windows.Forms.Label();
+            this.txtStartMins = new System.Windows.Forms.TextBox();
+            this.txtStartSecs = new System.Windows.Forms.TextBox();
+            this.label20 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dgvPoints)).BeginInit();
             this.cmsPoints.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -206,7 +212,7 @@
             // 
             this.label6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(500, 8);
+            this.label6.Location = new System.Drawing.Point(476, 9);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(82, 13);
             this.label6.TabIndex = 12;
@@ -221,6 +227,7 @@
             this.txtMins.TabIndex = 5;
             this.txtMins.Text = "0";
             this.txtMins.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.txtMins.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtSeq_KeyPress);
             // 
             // label7
             // 
@@ -389,6 +396,92 @@
             this.dgvPoints.TabIndex = 21;
             this.dgvPoints.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.dgvPoints_DataError);
             // 
+            // Column1
+            // 
+            this.Column1.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.Column1.Frozen = true;
+            this.Column1.HeaderText = "Seq";
+            this.Column1.MaxInputLength = 4;
+            this.Column1.Name = "Column1";
+            this.Column1.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.Column1.Width = 40;
+            // 
+            // Column2
+            // 
+            this.Column2.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.Column2.Frozen = true;
+            this.Column2.HeaderText = "X";
+            this.Column2.MaxInputLength = 5;
+            this.Column2.Name = "Column2";
+            this.Column2.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.Column2.Width = 60;
+            // 
+            // Column3
+            // 
+            this.Column3.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.Column3.Frozen = true;
+            this.Column3.HeaderText = "Y";
+            this.Column3.MaxInputLength = 5;
+            this.Column3.Name = "Column3";
+            this.Column3.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.Column3.Width = 60;
+            // 
+            // Column4
+            // 
+            this.Column4.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.Column4.Frozen = true;
+            this.Column4.HeaderText = "Z";
+            this.Column4.MaxInputLength = 5;
+            this.Column4.Name = "Column4";
+            this.Column4.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.Column4.Width = 60;
+            // 
+            // Column5
+            // 
+            this.Column5.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.Column5.Frozen = true;
+            this.Column5.HeaderText = "ID";
+            this.Column5.MaxInputLength = 2;
+            this.Column5.Name = "Column5";
+            this.Column5.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.Column5.Width = 30;
+            // 
+            // Column6
+            // 
+            this.Column6.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.Column6.Frozen = true;
+            this.Column6.HeaderText = "Time";
+            this.Column6.MaxInputLength = 6;
+            this.Column6.Name = "Column6";
+            this.Column6.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.Column6.Width = 50;
+            // 
+            // Column8
+            // 
+            this.Column8.Frozen = true;
+            this.Column8.HeaderText = "Dim";
+            this.Column8.MaxInputLength = 2;
+            this.Column8.MinimumWidth = 30;
+            this.Column8.Name = "Column8";
+            this.Column8.Width = 30;
+            // 
+            // Column7
+            // 
+            this.Column7.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.Column7.Frozen = true;
+            this.Column7.HeaderText = "Name";
+            this.Column7.MaxInputLength = 20;
+            this.Column7.Name = "Column7";
+            this.Column7.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.Column7.Width = 90;
+            // 
+            // clmDesc
+            // 
+            this.clmDesc.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.clmDesc.HeaderText = "Desc";
+            this.clmDesc.Name = "clmDesc";
+            this.clmDesc.Width = 197;
+            // 
             // cmsPoints
             // 
             this.cmsPoints.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -440,11 +533,11 @@
             this.btnIncrement.UseVisualStyleBackColor = true;
             this.btnIncrement.Click += new System.EventHandler(this.btnIncrement_Click);
             // 
-            // cmdEpisode
+            // cmbEpisode
             // 
-            this.cmdEpisode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmdEpisode.FormattingEnabled = true;
-            this.cmdEpisode.Items.AddRange(new object[] {
+            this.cmbEpisode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbEpisode.FormattingEnabled = true;
+            this.cmbEpisode.Items.AddRange(new object[] {
             "1",
             "2",
             "3",
@@ -455,61 +548,37 @@
             "8",
             "9",
             "10"});
-            this.cmdEpisode.Location = new System.Drawing.Point(600, 31);
-            this.cmdEpisode.Name = "cmdEpisode";
-            this.cmdEpisode.Size = new System.Drawing.Size(34, 21);
-            this.cmdEpisode.TabIndex = 18;
-            this.cmdEpisode.Visible = false;
+            this.cmbEpisode.Location = new System.Drawing.Point(576, 31);
+            this.cmbEpisode.Name = "cmbEpisode";
+            this.cmbEpisode.Size = new System.Drawing.Size(58, 21);
+            this.cmbEpisode.TabIndex = 18;
             // 
             // label12
             // 
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(500, 34);
+            this.label12.Location = new System.Drawing.Point(476, 34);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(48, 13);
             this.label12.TabIndex = 35;
             this.label12.Text = "Episode:";
-            this.label12.Visible = false;
-            // 
-            // textBox1
-            // 
-            this.textBox1.Location = new System.Drawing.Point(600, 84);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(34, 20);
-            this.textBox1.TabIndex = 20;
-            this.textBox1.Text = "0";
-            this.textBox1.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.textBox1.Visible = false;
-            // 
-            // textBox2
-            // 
-            this.textBox2.Location = new System.Drawing.Point(600, 58);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(34, 20);
-            this.textBox2.TabIndex = 19;
-            this.textBox2.Text = "0";
-            this.textBox2.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.textBox2.Visible = false;
             // 
             // label13
             // 
             this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(500, 61);
+            this.label13.Location = new System.Drawing.Point(476, 61);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(94, 13);
             this.label13.TabIndex = 39;
             this.label13.Text = "Start Marker Time:";
-            this.label13.Visible = false;
             // 
             // label14
             // 
             this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(500, 87);
+            this.label14.Location = new System.Drawing.Point(476, 87);
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(91, 13);
             this.label14.TabIndex = 40;
             this.label14.Text = "End Marker Time:";
-            this.label14.Visible = false;
             // 
             // txtSecs
             // 
@@ -540,6 +609,7 @@
             this.txtOffMins.TabIndex = 7;
             this.txtOffMins.Text = "0";
             this.txtOffMins.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.txtOffMins.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtSeq_KeyPress);
             // 
             // txtOffSecs
             // 
@@ -714,97 +784,101 @@
             this.label18.TabIndex = 55;
             this.label18.Text = "Dim:";
             // 
-            // Column1
+            // cmdUseStart
             // 
-            this.Column1.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.Column1.Frozen = true;
-            this.Column1.HeaderText = "Seq";
-            this.Column1.MaxInputLength = 4;
-            this.Column1.Name = "Column1";
-            this.Column1.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.Column1.Width = 40;
+            this.cmdUseStart.Location = new System.Drawing.Point(479, 108);
+            this.cmdUseStart.Name = "cmdUseStart";
+            this.cmdUseStart.Size = new System.Drawing.Size(59, 23);
+            this.cmdUseStart.TabIndex = 56;
+            this.cmdUseStart.Text = "Use Start";
+            this.cmdUseStart.UseVisualStyleBackColor = true;
+            this.cmdUseStart.Click += new System.EventHandler(this.cmdUseStart_Click);
             // 
-            // Column2
+            // cmdUseEnd
             // 
-            this.Column2.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.Column2.Frozen = true;
-            this.Column2.HeaderText = "X";
-            this.Column2.MaxInputLength = 5;
-            this.Column2.Name = "Column2";
-            this.Column2.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.Column2.Width = 60;
+            this.cmdUseEnd.Location = new System.Drawing.Point(575, 108);
+            this.cmdUseEnd.Name = "cmdUseEnd";
+            this.cmdUseEnd.Size = new System.Drawing.Size(59, 23);
+            this.cmdUseEnd.TabIndex = 57;
+            this.cmdUseEnd.Text = "Use End";
+            this.cmdUseEnd.UseVisualStyleBackColor = true;
+            this.cmdUseEnd.Click += new System.EventHandler(this.cmdUseEnd_Click);
             // 
-            // Column3
+            // txtEndMins
             // 
-            this.Column3.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.Column3.Frozen = true;
-            this.Column3.HeaderText = "Y";
-            this.Column3.MaxInputLength = 5;
-            this.Column3.Name = "Column3";
-            this.Column3.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.Column3.Width = 60;
+            this.txtEndMins.Location = new System.Drawing.Point(576, 84);
+            this.txtEndMins.MaxLength = 3;
+            this.txtEndMins.Name = "txtEndMins";
+            this.txtEndMins.Size = new System.Drawing.Size(31, 20);
+            this.txtEndMins.TabIndex = 60;
+            this.txtEndMins.Text = "0";
+            this.txtEndMins.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.txtEndMins.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtSeq_KeyPress);
             // 
-            // Column4
+            // txtEndSecs
             // 
-            this.Column4.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.Column4.Frozen = true;
-            this.Column4.HeaderText = "Z";
-            this.Column4.MaxInputLength = 5;
-            this.Column4.Name = "Column4";
-            this.Column4.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.Column4.Width = 60;
+            this.txtEndSecs.Location = new System.Drawing.Point(612, 84);
+            this.txtEndSecs.MaxLength = 2;
+            this.txtEndSecs.Name = "txtEndSecs";
+            this.txtEndSecs.Size = new System.Drawing.Size(21, 20);
+            this.txtEndSecs.TabIndex = 61;
+            this.txtEndSecs.Text = "00";
+            this.txtEndSecs.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.txtEndSecs.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtSeq_KeyPress);
             // 
-            // Column5
+            // label19
             // 
-            this.Column5.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.Column5.Frozen = true;
-            this.Column5.HeaderText = "ID";
-            this.Column5.MaxInputLength = 2;
-            this.Column5.Name = "Column5";
-            this.Column5.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.Column5.Width = 30;
+            this.label19.AutoSize = true;
+            this.label19.Location = new System.Drawing.Point(605, 86);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(10, 13);
+            this.label19.TabIndex = 63;
+            this.label19.Text = ":";
             // 
-            // Column6
+            // txtStartMins
             // 
-            this.Column6.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.Column6.Frozen = true;
-            this.Column6.HeaderText = "Time";
-            this.Column6.MaxInputLength = 6;
-            this.Column6.Name = "Column6";
-            this.Column6.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.Column6.Width = 50;
+            this.txtStartMins.Location = new System.Drawing.Point(576, 58);
+            this.txtStartMins.MaxLength = 3;
+            this.txtStartMins.Name = "txtStartMins";
+            this.txtStartMins.Size = new System.Drawing.Size(31, 20);
+            this.txtStartMins.TabIndex = 58;
+            this.txtStartMins.Text = "0";
+            this.txtStartMins.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.txtStartMins.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtSeq_KeyPress);
             // 
-            // Column8
+            // txtStartSecs
             // 
-            this.Column8.Frozen = true;
-            this.Column8.HeaderText = "Dim";
-            this.Column8.MaxInputLength = 2;
-            this.Column8.MinimumWidth = 30;
-            this.Column8.Name = "Column8";
-            this.Column8.Width = 30;
+            this.txtStartSecs.Location = new System.Drawing.Point(612, 58);
+            this.txtStartSecs.MaxLength = 2;
+            this.txtStartSecs.Name = "txtStartSecs";
+            this.txtStartSecs.Size = new System.Drawing.Size(21, 20);
+            this.txtStartSecs.TabIndex = 59;
+            this.txtStartSecs.Text = "00";
+            this.txtStartSecs.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.txtStartSecs.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtSeq_KeyPress);
             // 
-            // Column7
+            // label20
             // 
-            this.Column7.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.Column7.Frozen = true;
-            this.Column7.HeaderText = "Name";
-            this.Column7.MaxInputLength = 20;
-            this.Column7.Name = "Column7";
-            this.Column7.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.Column7.Width = 90;
-            // 
-            // clmDesc
-            // 
-            this.clmDesc.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.clmDesc.HeaderText = "Desc";
-            this.clmDesc.Name = "clmDesc";
-            this.clmDesc.Width = 197;
+            this.label20.AutoSize = true;
+            this.label20.Location = new System.Drawing.Point(605, 60);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(10, 13);
+            this.label20.TabIndex = 62;
+            this.label20.Text = ":";
             // 
             // UHCWaypoint
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(644, 435);
+            this.Controls.Add(this.txtEndMins);
+            this.Controls.Add(this.txtEndSecs);
+            this.Controls.Add(this.label19);
+            this.Controls.Add(this.txtStartMins);
+            this.Controls.Add(this.txtStartSecs);
+            this.Controls.Add(this.label20);
+            this.Controls.Add(this.cmdUseEnd);
+            this.Controls.Add(this.cmdUseStart);
             this.Controls.Add(this.txtDim);
             this.Controls.Add(this.label18);
             this.Controls.Add(this.btnLoadPlayerlist);
@@ -820,9 +894,7 @@
             this.Controls.Add(this.label15);
             this.Controls.Add(this.label14);
             this.Controls.Add(this.label13);
-            this.Controls.Add(this.textBox1);
-            this.Controls.Add(this.textBox2);
-            this.Controls.Add(this.cmdEpisode);
+            this.Controls.Add(this.cmbEpisode);
             this.Controls.Add(this.label12);
             this.Controls.Add(this.btnIncrement);
             this.Controls.Add(this.label11);
@@ -904,10 +976,8 @@
         private System.Windows.Forms.ContextMenuStrip cmsPoints;
         private System.Windows.Forms.ToolStripMenuItem tsmiDeleteRow;
         private System.Windows.Forms.Button btnIncrement;
-        private System.Windows.Forms.ComboBox cmdEpisode;
+        private System.Windows.Forms.ComboBox cmbEpisode;
         private System.Windows.Forms.Label label12;
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.TextBox textBox2;
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.TextBox txtSecs;
@@ -939,6 +1009,14 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Column8;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column7;
         private System.Windows.Forms.DataGridViewTextBoxColumn clmDesc;
+        private System.Windows.Forms.Button cmdUseStart;
+        private System.Windows.Forms.Button cmdUseEnd;
+        private System.Windows.Forms.TextBox txtEndMins;
+        private System.Windows.Forms.TextBox txtEndSecs;
+        private System.Windows.Forms.Label label19;
+        private System.Windows.Forms.TextBox txtStartMins;
+        private System.Windows.Forms.TextBox txtStartSecs;
+        private System.Windows.Forms.Label label20;
     }
 }
 

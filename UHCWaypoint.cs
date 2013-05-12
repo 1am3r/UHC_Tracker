@@ -44,7 +44,7 @@ namespace UHC_Tracker
             DataSource.DS.InitializeWorldPath(this);
             DataSource.DS.Connect("localhost", 50191);
 
-            cmdEpisode.SelectedIndex = 0;
+            cmbEpisode.SelectedIndex = 0;
 
             timer1.Start();
         }
@@ -775,6 +775,48 @@ namespace UHC_Tracker
                 MessageBox.Show("Couldn't download data! ex:" + ex.Message);
                 return;
             }
+        }
+
+        private void cmdUseStart_Click(object sender, EventArgs e)
+        {
+            double time = 0;
+            time = cmbEpisode.SelectedIndex * 30;
+            time -= double.Parse(txtStartMins.Text) + (double.Parse(txtStartSecs.Text) / 60);
+
+            if (time < 0)
+            {
+                chkOffNeg.CheckState = CheckState.Unchecked;
+                time = -time;
+            }
+            else
+            {
+                chkOffNeg.CheckState = CheckState.Checked;
+            }
+
+            double mins = Math.Floor(time);
+            txtOffMins.Text = ((int)mins).ToString();
+            txtOffSecs.Text = (Math.Round((time - mins) * 60, 0)).ToString("0#");
+        }
+
+        private void cmdUseEnd_Click(object sender, EventArgs e)
+        {
+            double time = 0;
+            time = (cmbEpisode.SelectedIndex + 1) * 30;
+            time -= double.Parse(txtEndMins.Text) + (double.Parse(txtEndSecs.Text) / 60);
+
+            if (time < 0)
+            {
+                chkOffNeg.CheckState = CheckState.Unchecked;
+                time = -time;
+            }
+            else
+            {
+                chkOffNeg.CheckState = CheckState.Checked;
+            }
+
+            double mins = Math.Floor(time);
+            txtOffMins.Text = ((int)mins).ToString();
+            txtOffSecs.Text = (Math.Round((time - mins) * 60, 0)).ToString("0#");
         }
     }
 
