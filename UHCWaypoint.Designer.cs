@@ -69,6 +69,7 @@
             this.cmsPoints = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsmiDeleteRow = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmidEditTime = new System.Windows.Forms.ToolStripMenuItem();
+            this.teleportToHereToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.label11 = new System.Windows.Forms.Label();
             this.txtMSeq = new System.Windows.Forms.TextBox();
             this.btnIncrement = new System.Windows.Forms.Button();
@@ -86,6 +87,8 @@
             this.btnConnect = new System.Windows.Forms.Button();
             this.lblStatus = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.label21 = new System.Windows.Forms.Label();
+            this.cmbSeason = new System.Windows.Forms.ComboBox();
             this.btnDownload = new System.Windows.Forms.Button();
             this.btnUpload = new System.Windows.Forms.Button();
             this.btnLoad = new System.Windows.Forms.Button();
@@ -103,6 +106,8 @@
             this.txtStartMins = new System.Windows.Forms.TextBox();
             this.txtStartSecs = new System.Windows.Forms.TextBox();
             this.label20 = new System.Windows.Forms.Label();
+            this.txtMCName = new System.Windows.Forms.TextBox();
+            this.label22 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dgvPoints)).BeginInit();
             this.cmsPoints.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -486,23 +491,31 @@
             // 
             this.cmsPoints.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsmiDeleteRow,
-            this.tsmidEditTime});
+            this.tsmidEditTime,
+            this.teleportToHereToolStripMenuItem});
             this.cmsPoints.Name = "cmsPoints";
-            this.cmsPoints.Size = new System.Drawing.Size(153, 70);
+            this.cmsPoints.Size = new System.Drawing.Size(159, 70);
             // 
             // tsmiDeleteRow
             // 
             this.tsmiDeleteRow.Name = "tsmiDeleteRow";
-            this.tsmiDeleteRow.Size = new System.Drawing.Size(152, 22);
+            this.tsmiDeleteRow.Size = new System.Drawing.Size(158, 22);
             this.tsmiDeleteRow.Text = "Delete Row";
             this.tsmiDeleteRow.Click += new System.EventHandler(this.tsmiDeleteRow_Click);
             // 
             // tsmidEditTime
             // 
             this.tsmidEditTime.Name = "tsmidEditTime";
-            this.tsmidEditTime.Size = new System.Drawing.Size(152, 22);
+            this.tsmidEditTime.Size = new System.Drawing.Size(158, 22);
             this.tsmidEditTime.Text = "Edit Time";
             this.tsmidEditTime.Click += new System.EventHandler(this.tsmidEditTime_Click);
+            // 
+            // teleportToHereToolStripMenuItem
+            // 
+            this.teleportToHereToolStripMenuItem.Name = "teleportToHereToolStripMenuItem";
+            this.teleportToHereToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
+            this.teleportToHereToolStripMenuItem.Text = "Teleport to here";
+            this.teleportToHereToolStripMenuItem.Click += new System.EventHandler(this.teleportToHereToolStripMenuItem_Click);
             // 
             // label11
             // 
@@ -679,6 +692,8 @@
             // 
             this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox2.Controls.Add(this.label21);
+            this.groupBox2.Controls.Add(this.cmbSeason);
             this.groupBox2.Controls.Add(this.btnDownload);
             this.groupBox2.Controls.Add(this.btnUpload);
             this.groupBox2.Controls.Add(this.btnLoad);
@@ -686,10 +701,38 @@
             this.groupBox2.Controls.Add(this.btnSave);
             this.groupBox2.Location = new System.Drawing.Point(12, 344);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(330, 81);
+            this.groupBox2.Size = new System.Drawing.Size(399, 81);
             this.groupBox2.TabIndex = 51;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Data";
+            // 
+            // label21
+            // 
+            this.label21.AutoSize = true;
+            this.label21.Location = new System.Drawing.Point(168, 31);
+            this.label21.Name = "label21";
+            this.label21.Size = new System.Drawing.Size(72, 13);
+            this.label21.TabIndex = 56;
+            this.label21.Text = "UHC Season:";
+            // 
+            // cmbSeason
+            // 
+            this.cmbSeason.FormattingEnabled = true;
+            this.cmbSeason.Items.AddRange(new object[] {
+            "3",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "11",
+            "12",
+            "13"});
+            this.cmbSeason.Location = new System.Drawing.Point(168, 50);
+            this.cmbSeason.Name = "cmbSeason";
+            this.cmbSeason.Size = new System.Drawing.Size(72, 21);
+            this.cmbSeason.TabIndex = 55;
             // 
             // btnDownload
             // 
@@ -727,7 +770,7 @@
             // btnClear
             // 
             this.btnClear.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnClear.Location = new System.Drawing.Point(249, 19);
+            this.btnClear.Location = new System.Drawing.Point(318, 19);
             this.btnClear.Name = "btnClear";
             this.btnClear.Size = new System.Drawing.Size(75, 23);
             this.btnClear.TabIndex = 24;
@@ -866,11 +909,29 @@
             this.label20.TabIndex = 62;
             this.label20.Text = ":";
             // 
+            // txtMCName
+            // 
+            this.txtMCName.Location = new System.Drawing.Point(351, 24);
+            this.txtMCName.Name = "txtMCName";
+            this.txtMCName.Size = new System.Drawing.Size(70, 20);
+            this.txtMCName.TabIndex = 64;
+            // 
+            // label22
+            // 
+            this.label22.AutoSize = true;
+            this.label22.Location = new System.Drawing.Point(348, 8);
+            this.label22.Name = "label22";
+            this.label22.Size = new System.Drawing.Size(120, 13);
+            this.label22.TabIndex = 65;
+            this.label22.Text = "Minecraft in game name";
+            // 
             // UHCWaypoint
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(644, 435);
+            this.Controls.Add(this.label22);
+            this.Controls.Add(this.txtMCName);
             this.Controls.Add(this.txtEndMins);
             this.Controls.Add(this.txtEndSecs);
             this.Controls.Add(this.label19);
@@ -936,6 +997,7 @@
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1017,6 +1079,11 @@
         private System.Windows.Forms.TextBox txtStartMins;
         private System.Windows.Forms.TextBox txtStartSecs;
         private System.Windows.Forms.Label label20;
+        private System.Windows.Forms.Label label21;
+        private System.Windows.Forms.ComboBox cmbSeason;
+        private System.Windows.Forms.TextBox txtMCName;
+        private System.Windows.Forms.Label label22;
+        private System.Windows.Forms.ToolStripMenuItem teleportToHereToolStripMenuItem;
     }
 }
 

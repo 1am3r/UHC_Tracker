@@ -42,9 +42,10 @@ namespace UHC_Tracker
             DataSource.DS.InitializeConnectionStatusChanged(this);
             DataSource.DS.InitializePlayerLocation(this);
             DataSource.DS.InitializeWorldPath(this);
-            DataSource.DS.Connect("localhost", 50191);
+            DataSource.DS.Connect("46.38.243.240", 50191);
 
             cmbEpisode.SelectedIndex = 0;
+            cmbSeason.SelectedIndex = cmbSeason.Items.Count - 1;
 
             timer1.Start();
         }
@@ -120,8 +121,8 @@ namespace UHC_Tracker
         {
             if (DataSource.DS.isConnected && timer1.Enabled)
             {
-                DataSource.DS.GetPlayerLocation();
-                DataSource.DS.GetWorldPath();
+                DataSource.DS.GetPlayerLocation(txtMCName.Text);
+                DataSource.DS.GetWorldPath(txtMCName.Text);
             }
         }
 
@@ -563,7 +564,7 @@ namespace UHC_Tracker
         {
             if (!DataSource.DS.isConnected)
             {
-                DataSource.DS.Connect("localhost", 50191);
+                DataSource.DS.Connect("46.38.243.240", 50191);
             }
             
         }
@@ -633,7 +634,7 @@ namespace UHC_Tracker
             try
             {
                 WebClient dataClient = new WebClient();
-                System.IO.Stream dataStrm = dataClient.OpenRead("http://88.198.183.184/uhc10/data/" + cmbPlayer.Text + ".json");
+                System.IO.Stream dataStrm = dataClient.OpenRead("http://46.38.243.240/uhc" + cmbSeason.Text + "/data/" + cmbPlayer.Text + ".json");
 
                 topPartIndex = 0;
                 dgvPoints.Rows.Clear();
@@ -751,7 +752,7 @@ namespace UHC_Tracker
             try
             {
                 WebClient dataClient = new WebClient();
-                System.IO.Stream dataStrm = dataClient.OpenRead("http://88.198.183.184/uhc/players.json");
+                System.IO.Stream dataStrm = dataClient.OpenRead("http://46.38.243.240/uhc/players.json");
                 System.IO.StreamReader sr = new System.IO.StreamReader(dataStrm);
                 JsonTextReader json = new JsonTextReader(sr);
                 JsonSerializer jsonSer = new JsonSerializer();
@@ -780,7 +781,7 @@ namespace UHC_Tracker
         private void cmdUseStart_Click(object sender, EventArgs e)
         {
             double time = 0;
-            time = cmbEpisode.SelectedIndex * 30;
+            time = cmbEpisode.SelectedIndex * 20;
             time -= double.Parse(txtStartMins.Text) + (double.Parse(txtStartSecs.Text) / 60);
 
             if (time < 0)
@@ -801,7 +802,7 @@ namespace UHC_Tracker
         private void cmdUseEnd_Click(object sender, EventArgs e)
         {
             double time = 0;
-            time = (cmbEpisode.SelectedIndex + 1) * 30;
+            time = (cmbEpisode.SelectedIndex + 1) * 20;
             time -= double.Parse(txtEndMins.Text) + (double.Parse(txtEndSecs.Text) / 60);
 
             if (time < 0)
@@ -817,6 +818,18 @@ namespace UHC_Tracker
             double mins = Math.Floor(time);
             txtOffMins.Text = ((int)mins).ToString();
             txtOffSecs.Text = (Math.Round((time - mins) * 60, 0)).ToString("0#");
+        }
+
+        private void teleportToHereToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (dgvPoints.SelectedRows.Count == 1)
+            {
+                double x = double.Parse(dgvPoints.SelectedRows[0].Cells[1].Value.ToString());
+                double y = double.Parse(dgvPoints.SelectedRows[0].Cells[2].Value.ToString());
+                double z = double.Parse(dgvPoints.SelectedRows[0].Cells[3].Value.ToString());
+
+                DataSource.DS.SetPlayerLocation(txtMCName.Text, (int) x, (int) y, (int) z);
+            }
         }
     }
 

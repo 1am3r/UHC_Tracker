@@ -19,6 +19,7 @@ namespace DataSource
 		private static int DOUBLE_BYTES = 8;
         private const byte GET_PLAYER_LOCATION = 0;
         private const byte GET_WORLD_PATH = 20;
+        private const byte SET_PLAYER_LOCATION = 30;
 
 		/// <summary>
 		/// True if connected.
@@ -63,22 +64,55 @@ namespace DataSource
 		/// <summary>
 		/// Requests from the Minecraft Client the player's location.
 		/// </summary>
-		public static void GetPlayerLocation()
+		public static void GetPlayerLocation(string name)
 		{
 			if (isConnected)
 			{
-				client.Send(new byte[] { GET_PLAYER_LOCATION });
+                int nameLength = name.Length;
+                byte[] data = new byte[1 + 4 + nameLength];
+                data[0] = GET_PLAYER_LOCATION;
+                InsertBytes(data, 1, ByteConverter.GetBytes(nameLength));
+                InsertBytes(data, 5, ByteConverter.GetBytes(name));
+
+				client.Send(data);
 			}
 		}
+
+        public static void SetPlayerLocation(string name, int x, int y, int z)
+        {
+            int nameLength = name.Length;
+            byte[] data = new byte[1 + 4 + nameLength + (DOUBLE_BYTES * 3)];
+            int i = 0;
+            data[i] = SET_PLAYER_LOCATION;
+            i++;
+            InsertBytes(data, i, ByteConverter.GetBytes(x)); // X
+            i += INT_BYTES;
+            InsertBytes(data, i, ByteConverter.GetBytes(y)); // Y
+            i += INT_BYTES;
+            InsertBytes(data, i, ByteConverter.GetBytes(z)); // Z
+            i += INT_BYTES;
+            InsertBytes(data, i, ByteConverter.GetBytes(nameLength));
+            i += INT_BYTES;
+            InsertBytes(data, i, ByteConverter.GetBytes(name));
+            i += nameLength;
+
+            client.Send(data);
+        }
 
         /// <summary>
         /// Requests from the Minecraft Client the player's location.
         /// </summary>
-        public static void GetWorldPath()
+        public static void GetWorldPath(string name)
         {
             if (isConnected)
             {
-                client.Send(new byte[] { GET_WORLD_PATH });
+                int nameLength = name.Length;
+                byte[] data = new byte[1 + 4 + nameLength];
+                data[0] = GET_WORLD_PATH;
+                InsertBytes(data, 1, ByteConverter.GetBytes(nameLength));
+                InsertBytes(data, 5, ByteConverter.GetBytes(name));
+
+                client.Send(data);
             }
         }
 
