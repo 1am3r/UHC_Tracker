@@ -1,4 +1,4 @@
-﻿namespace UHC_Tracker
+namespace UHC_Tracker
 {
     partial class UHCWaypoint
     {
@@ -109,6 +109,7 @@
             this.label20 = new System.Windows.Forms.Label();
             this.txtMCName = new System.Windows.Forms.TextBox();
             this.label22 = new System.Windows.Forms.Label();
+            this.btnHear = new System.Windows.Forms.Button();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.tsslSaveState = new System.Windows.Forms.ToolStripStatusLabel();
             this.tsslConnection = new System.Windows.Forms.ToolStripStatusLabel();
@@ -747,7 +748,8 @@
             "10",
             "11",
             "12",
-            "13"});
+            "13",
+            "14"});
             this.cmbSeason.Location = new System.Drawing.Point(168, 50);
             this.cmbSeason.Name = "cmbSeason";
             this.cmbSeason.Size = new System.Drawing.Size(72, 21);
@@ -944,6 +946,16 @@
             this.label22.TabIndex = 65;
             this.label22.Text = "Minecraft in game name";
             // 
+            // btnHear
+            // 
+            this.btnHear.Location = new System.Drawing.Point(537, 140);
+            this.btnHear.Name = "btnHear";
+            this.btnHear.Size = new System.Drawing.Size(95, 23);
+            this.btnHear.TabIndex = 66;
+            this.btnHear.Text = "Add Hears";
+            this.btnHear.UseVisualStyleBackColor = true;
+            this.btnHear.Click += new System.EventHandler(this.addPoint);
+            // 
             // statusStrip1
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -954,6 +966,7 @@
             this.statusStrip1.Size = new System.Drawing.Size(644, 22);
             this.statusStrip1.TabIndex = 66;
             this.statusStrip1.Text = "statusStrip1";
+            // 
             // 
             // tsslSaveState
             // 
@@ -979,6 +992,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(644, 480);
             this.Controls.Add(this.statusStrip1);
+            this.Controls.Add(this.btnHear);
             this.Controls.Add(this.label22);
             this.Controls.Add(this.txtMCName);
             this.Controls.Add(this.txtEndMins);
@@ -1136,6 +1150,7 @@
         private System.Windows.Forms.Label label22;
         private System.Windows.Forms.ToolStripMenuItem teleportToHereToolStripMenuItem;
         private System.Windows.Forms.StatusStrip statusStrip1;
+        private System.Windows.Forms.Button btnHear;
         private System.Windows.Forms.CheckBox chkAutoSave;
         private System.Windows.Forms.ToolStripStatusLabel tsslSaveState;
         private System.Windows.Forms.Timer saveTimer;
