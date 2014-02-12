@@ -108,6 +108,7 @@
             this.label20 = new System.Windows.Forms.Label();
             this.txtMCName = new System.Windows.Forms.TextBox();
             this.label22 = new System.Windows.Forms.Label();
+            this.btnHear = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dgvPoints)).BeginInit();
             this.cmsPoints.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -728,7 +729,8 @@
             "10",
             "11",
             "12",
-            "13"});
+            "13",
+            "14"});
             this.cmbSeason.Location = new System.Drawing.Point(168, 50);
             this.cmbSeason.Name = "cmbSeason";
             this.cmbSeason.Size = new System.Drawing.Size(72, 21);
@@ -925,11 +927,22 @@
             this.label22.TabIndex = 65;
             this.label22.Text = "Minecraft in game name";
             // 
+            // btnHear
+            // 
+            this.btnHear.Location = new System.Drawing.Point(537, 140);
+            this.btnHear.Name = "btnHear";
+            this.btnHear.Size = new System.Drawing.Size(95, 23);
+            this.btnHear.TabIndex = 66;
+            this.btnHear.Text = "Add Hears";
+            this.btnHear.UseVisualStyleBackColor = true;
+            this.btnHear.Click += new System.EventHandler(this.addPoint);
+            // 
             // UHCWaypoint
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(644, 435);
+            this.Controls.Add(this.btnHear);
             this.Controls.Add(this.label22);
             this.Controls.Add(this.txtMCName);
             this.Controls.Add(this.txtEndMins);
@@ -1084,6 +1097,7 @@
         private System.Windows.Forms.TextBox txtMCName;
         private System.Windows.Forms.Label label22;
         private System.Windows.Forms.ToolStripMenuItem teleportToHereToolStripMenuItem;
+        private System.Windows.Forms.Button btnHear;
     }
 }
 

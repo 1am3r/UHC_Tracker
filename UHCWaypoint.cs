@@ -229,6 +229,10 @@ namespace UHC_Tracker
                 {
                     id = "6";
                 }
+                else if (sender.Equals(btnHear))
+                {
+                    id = "7";
+                }
                 else if (sender.Equals(btnDeath))
                 {
                     id = "1";
