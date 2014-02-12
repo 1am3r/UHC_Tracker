@@ -15,14 +15,45 @@ using Newtonsoft.Json;
 
 using DropNet;
 using DropNet.Authenticators;
+using System.Globalization;
 
 namespace UHC_Tracker
 {
     public partial class UHCWaypoint : Form, DataSource.DSHandlerPlayerLocation, DataSource.DSHandlerConnectionStatusChanged, DataSource.DSHandlerWorldPath
     {
         private EditTime dlgEditTime;
-        KeyboardHook hook = new KeyboardHook();
+        KeyboardHook hook = null;
         bool isClosing = false;
+        private string autoSaveFile = null;
+
+        private static bool IsRunningOnMono()
+        {
+            return Type.GetType("Mono.Runtime") != null;
+        }
+
+
+        private void resetAutoSaveFile()
+        {
+            tsslSaveState.Text = "Data not saved! AutoSave not enabled!";
+            autoSaveFile = null;
+            saveTimer.Stop();
+        }
+
+        private void pauseAutoSave()
+        {
+            autoSaveFile = null;
+            saveTimer.Stop();
+        }
+
+        private void startAutoSave(string path)
+        {
+            if (chkAutoSave.Checked)
+            {
+                autoSaveFile = path;
+                saveTimer.Start();
+                tsslSaveState.Text = "Data autosave to file: " + autoSaveFile + " enabled";
+            }
+        }
 
         public UHCWaypoint()
         {
@@ -36,8 +67,14 @@ namespace UHC_Tracker
         {
             System.Threading.Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.CreateSpecificCulture("en-GB");
 
-            hook.KeyPressed += new EventHandler<KeyPressedEventArgs>(hook_KeyPressed);
-            hook.RegisterHotKey(UHC_Tracker.ModifierKeys.Control , Keys.F12);
+            resetAutoSaveFile();
+
+            if (!IsRunningOnMono())
+            {
+                hook = new KeyboardHook();
+                hook.KeyPressed += new EventHandler<KeyPressedEventArgs>(hook_KeyPressed);
+                hook.RegisterHotKey(UHC_Tracker.ModifierKeys.Control, Keys.F12);
+            }
 
             DataSource.DS.InitializeConnectionStatusChanged(this);
             DataSource.DS.InitializePlayerLocation(this);
@@ -47,7 +84,11 @@ namespace UHC_Tracker
             cmbEpisode.SelectedIndex = 0;
             cmbSeason.SelectedIndex = cmbSeason.Items.Count - 1;
 
-            timer1.Start();
+            updateTimer.Start();
+
+            tsslConnection.Alignment = ToolStripItemAlignment.Right;
+            tsslConnection.Spring = true;
+            tsslConnection.Anchor = AnchorStyles.Right;
         }
 
         void hook_KeyPressed(object sender, KeyPressedEventArgs e)
@@ -57,46 +98,46 @@ namespace UHC_Tracker
 
         public void ConnectionStatusChanged(DataSource.ConnectionStatus newStatus)
         {
-            switch (newStatus)
+            if (!this.isClosing)
             {
-                case DataSource.ConnectionStatus.Idle:
-                    lblStatus.SetPropertyThreadSafe(() => lblStatus.Text, "Not Connected");
-                    btnConnect.SetPropertyThreadSafe(() => btnConnect.Text, "Connect");
-                    btnConnect.SetPropertyThreadSafe(() => btnConnect.Enabled, true);
-                    break;
-                case DataSource.ConnectionStatus.Connecting:
-                    lblStatus.SetPropertyThreadSafe(() => lblStatus.Text, "Connecting");
-                    btnConnect.SetPropertyThreadSafe(() => btnConnect.Text, "Connect");
-                    btnConnect.SetPropertyThreadSafe(() => btnConnect.Enabled, false);
-                    break;
-                case DataSource.ConnectionStatus.Connected:
-                    lblStatus.SetPropertyThreadSafe(() => lblStatus.Text, "Connected");
-                    btnConnect.SetPropertyThreadSafe(() => btnConnect.Text, "Connect");
-                    btnConnect.SetPropertyThreadSafe(() => btnConnect.Enabled, false);
-                    break;
-                case DataSource.ConnectionStatus.Refused:
-                    lblStatus.SetPropertyThreadSafe(() => lblStatus.Text, "Connection\nrefused");
-                    btnConnect.SetPropertyThreadSafe(() => btnConnect.Text, "Connect");
-                    btnConnect.SetPropertyThreadSafe(() => btnConnect.Enabled, true);
-                    break;
-                case DataSource.ConnectionStatus.Disconnected:
-                    lblStatus.SetPropertyThreadSafe(() => lblStatus.Text, "Disconnected");
-                    btnConnect.SetPropertyThreadSafe(() => btnConnect.Text, "Connect");
-                    btnConnect.SetPropertyThreadSafe(() => btnConnect.Enabled, true);
-                    if (!this.isClosing)
-                    {
+                switch (newStatus)
+                {
+                    case DataSource.ConnectionStatus.Idle:
+                        lblStatus.SetPropertyThreadSafe(() => lblStatus.Text, "Not Connected");
+                        btnConnect.SetPropertyThreadSafe(() => btnConnect.Text, "Connect");
+                        btnConnect.SetPropertyThreadSafe(() => btnConnect.Enabled, true);
+                        break;
+                    case DataSource.ConnectionStatus.Connecting:
+                        lblStatus.SetPropertyThreadSafe(() => lblStatus.Text, "Connecting");
+                        btnConnect.SetPropertyThreadSafe(() => btnConnect.Text, "Connect");
+                        btnConnect.SetPropertyThreadSafe(() => btnConnect.Enabled, false);
+                        break;
+                    case DataSource.ConnectionStatus.Connected:
+                        lblStatus.SetPropertyThreadSafe(() => lblStatus.Text, "Connected");
+                        btnConnect.SetPropertyThreadSafe(() => btnConnect.Text, "Connect");
+                        btnConnect.SetPropertyThreadSafe(() => btnConnect.Enabled, false);
+                        break;
+                    case DataSource.ConnectionStatus.Refused:
+                        lblStatus.SetPropertyThreadSafe(() => lblStatus.Text, "Connection\nrefused");
+                        btnConnect.SetPropertyThreadSafe(() => btnConnect.Text, "Connect");
+                        btnConnect.SetPropertyThreadSafe(() => btnConnect.Enabled, true);
+                        break;
+                    case DataSource.ConnectionStatus.Disconnected:
+                        lblStatus.SetPropertyThreadSafe(() => lblStatus.Text, "Disconnected");
+                        btnConnect.SetPropertyThreadSafe(() => btnConnect.Text, "Connect");
+                        btnConnect.SetPropertyThreadSafe(() => btnConnect.Enabled, true);
                         this.Invoke(new Action(() => { MessageBox.Show(this, "Disconnected!", "Disconnected", MessageBoxButtons.OK); }));
-                    }
-                    break;
-                default:
-                    lblStatus.SetPropertyThreadSafe(() => lblStatus.Text, "Unknown Connection Status");
-                    break;
+                        break;
+                    default:
+                        lblStatus.SetPropertyThreadSafe(() => lblStatus.Text, "Unknown Connection Status");
+                        break;
+                }
             }
         }
 
         public void PlayerLocationReceived(List<DataSource.Entity> players, DataSource.Entity userPlayer)
         {
-            if (userPlayer != null && timer1.Enabled)
+            if (userPlayer != null && updateTimer.Enabled)
             {
                 txtX.SetPropertyThreadSafe(() => txtX.Text, userPlayer.ix.ToString());
                 txtY.SetPropertyThreadSafe(() => txtY.Text, userPlayer.iy.ToString());
@@ -112,14 +153,14 @@ namespace UHC_Tracker
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            timer1.Stop();
+            updateTimer.Stop();
             isClosing = true;
             DataSource.DS.ShutDown();
         }
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            if (DataSource.DS.isConnected && timer1.Enabled)
+            if (DataSource.DS.isConnected && updateTimer.Enabled)
             {
                 DataSource.DS.GetPlayerLocation(txtMCName.Text);
                 DataSource.DS.GetWorldPath(txtMCName.Text);
@@ -150,28 +191,56 @@ namespace UHC_Tracker
 
         private void txtCoord_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) && e.KeyChar != '-')
+            if (sender is TextBox)
             {
-                e.Handled = true;
-            }
+                TextBox tb = sender as TextBox;
 
-            // only allow '-' at beginning
-            if (e.KeyChar == '-' && (sender as TextBox).Text.Length > 0)
-            {
-                e.Handled = true;
+                // Merker für Bedingungen
+                bool bOk = true;
+
+                // wenn das Eingabezeichen ein kulturunabhängiges Dezimaltrennzeichen ist
+                if (e.KeyChar.ToString() == NumberFormatInfo.InvariantInfo.NumberDecimalSeparator)
+                {
+                    // überprüfen, ob in der Textbox schon ein Dezimaltrennzeichen steht,
+                    // um Doppelungen zu vermeiden
+                    bOk = (tb.Text.IndexOf(NumberFormatInfo.InvariantInfo.NumberDecimalSeparator) < 0);
+                }
+
+                // wenn das Eingabezeichen ein führendes Minus ist
+                if (e.KeyChar.ToString() == NumberFormatInfo.InvariantInfo.NegativeSign)
+                {
+                    // überprüfen, ob in der Textbox schon ein führendes Minus steht,
+                    // um Doppelungen zu vermeiden
+                    bOk = ((tb.SelectionStart == 0) && (tb.Text.IndexOf(NumberFormatInfo.InvariantInfo.NegativeSign) < 0));
+                }
+
+                if (bOk)
+                {
+                    // Liste mit erlaubten Zeichen, in diesem Fall
+                    // führendes Minus, Zahlen, Dezimaltrennzeichen, Backspace
+                    string sChars = NumberFormatInfo.InvariantInfo.NegativeSign + "0123456789" + NumberFormatInfo.InvariantInfo.NumberDecimalSeparator + "\b";
+
+                    // testen, ob das Zeichen erlaubt ist (in der Liste vorhanden ist)
+                    e.Handled = (sChars.IndexOf(e.KeyChar) < 0);
+                }
+                else
+                {
+                    // sonst Eingabezeichen verwerfen
+                    e.Handled = true;
+                }
             }
         }
 
         private void btnUpdate_Click(object sender, EventArgs e)
         {
-            if (timer1.Enabled)
+            if (updateTimer.Enabled)
             {
-                timer1.Stop();
+                updateTimer.Stop();
                 btnUpdate.Text = "Start Updating";
             }
             else
             {
-                timer1.Start();
+                updateTimer.Start();
                 btnUpdate.Text = "Stop Updating";
             }
         }
@@ -262,6 +331,40 @@ namespace UHC_Tracker
             lblDataSets.Text = (dgvPoints.RowCount - 1).ToString();
         }
 
+        private readonly Object saveFileLock = new Object();
+        private void doSave(System.IO.StreamWriter sw)
+        {
+            lock (saveFileLock)
+            {
+                JsonTextWriter json = new JsonTextWriter(sw);
+                json.Formatting = Formatting.Indented;
+                json.WriteStartArray();
+                JsonSerializer jsonSer = new JsonSerializer();
+                jsonSer.Formatting = Formatting.None;
+                jsonSer.NullValueHandling = NullValueHandling.Ignore;
+
+                lock (dgvPoints)
+                {
+                    foreach (DataGridViewRow row in dgvPoints.Rows)
+                    {
+                        //IDictionary<string, string> d = convertRow(row);
+                        RowData d = createRowObject(row);
+                        if (d != null)
+                        {
+                            StringBuilder sb = new StringBuilder();
+                            System.IO.StringWriter swL = new System.IO.StringWriter(sb);
+                            jsonSer.Serialize(swL, d);
+
+                            json.Formatting = Formatting.Indented;
+                            json.WriteRawValue(sb.ToString());
+                        }
+                    }
+                }
+                json.WriteEndArray();
+                json.Close();
+            }
+        }
+
         private void btnSave_Click(object sender, EventArgs e)
         {
             SaveFileDialog sfd = new SaveFileDialog();
@@ -274,40 +377,11 @@ namespace UHC_Tracker
                 return;
             }
 
-
+            pauseAutoSave();
             System.IO.StreamWriter sw = new System.IO.StreamWriter(sfd.OpenFile());
-            JsonTextWriter json = new JsonTextWriter(sw);
-            json.Formatting = Formatting.Indented;
-            json.WriteStartArray();
-            JsonSerializer jsonSer = new JsonSerializer();
-            jsonSer.Formatting = Formatting.None;
-            jsonSer.NullValueHandling = NullValueHandling.Ignore;
-            foreach (DataGridViewRow row in dgvPoints.Rows)
-            {
-                //IDictionary<string, string> d = convertRow(row);
-                RowData d = createRowObject(row);
-                if (d != null)
-                {
-                    StringBuilder sb = new StringBuilder();
-                    System.IO.StringWriter swL = new System.IO.StringWriter(sb);
-                    jsonSer.Serialize(swL, d);
-
-                    json.Formatting = Formatting.Indented;
-                    json.WriteRawValue(sb.ToString());
-                }
-            }
-            json.WriteEndArray();
-            json.Close();
+            doSave(sw);
             sw.Close();
-
-
-            //System.IO.StreamWriter sw = new System.IO.StreamWriter(sfd.OpenFile());
-
-            //foreach (DataGridViewRow row in dgvPoints.Rows) {
-            //    sw.WriteLine(printRow(row));
-            //}
-
-            //sw.Close();
+            startAutoSave(sfd.FileName);
         }
 
         private string printRow(DataGridViewRow row)
@@ -455,7 +529,7 @@ namespace UHC_Tracker
             {
                 cell.Value = data["dim"];
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 cell.Value = "0";
             }
@@ -483,13 +557,19 @@ namespace UHC_Tracker
                 {
                     topPartIndex = dgvPoints.Rows.Count + 1;
                 }
-                dgvPoints.Rows.Insert(topPartIndex, row);
+                lock (dgvPoints)
+                {
+                    dgvPoints.Rows.Insert(topPartIndex, row);
+                }
                 topPartIndex++;
             }
             else
             {
-                dgvPoints.Rows.Add(row);
-                dgvPoints.FirstDisplayedScrollingRowIndex = dgvPoints.RowCount - 1;
+                lock (dgvPoints)
+                {
+                    dgvPoints.Rows.Add(row);
+                    dgvPoints.FirstDisplayedScrollingRowIndex = dgvPoints.RowCount - 1;
+                }
             }
         }
 
@@ -548,14 +628,18 @@ namespace UHC_Tracker
 
         private void btnClear_Click(object sender, EventArgs e)
         {
-            if (dgvPoints.Rows.Count > 1)
+            lock (dgvPoints)
             {
-                DialogResult result = MessageBox.Show("Do you really want to discard all entrys?", "Are you sure?", MessageBoxButtons.YesNo);
-                if (result == System.Windows.Forms.DialogResult.Yes)
+                if (dgvPoints.Rows.Count > 1)
                 {
-                    topPartIndex = 0;
-                    dgvPoints.Rows.Clear();
-                    lblDataSets.Text = (dgvPoints.RowCount - 1).ToString();
+                    DialogResult result = MessageBox.Show("Do you really want to discard all entrys?", "Are you sure?", MessageBoxButtons.YesNo);
+                    if (result == System.Windows.Forms.DialogResult.Yes)
+                    {
+                        topPartIndex = 0;
+                        dgvPoints.Rows.Clear();
+                        lblDataSets.Text = (dgvPoints.RowCount - 1).ToString();
+                        resetAutoSaveFile();
+                    }
                 }
             }
         }
@@ -577,7 +661,10 @@ namespace UHC_Tracker
                 if (result == System.Windows.Forms.DialogResult.Yes)
                 {
                     topPartIndex = 0;
-                    dgvPoints.Rows.Clear();
+                    lock (dgvPoints)
+                    {
+                        dgvPoints.Rows.Clear();
+                    }
                     lblDataSets.Text = (dgvPoints.RowCount - 1).ToString();
                 }
                 else
@@ -595,6 +682,8 @@ namespace UHC_Tracker
             {
                 return;
             }
+
+            resetAutoSaveFile();
 
             System.IO.StreamReader sr = new System.IO.StreamReader(ofd.OpenFile());
             JsonTextReader json = new JsonTextReader(sr);
@@ -631,13 +720,18 @@ namespace UHC_Tracker
                 }
             }
 
+            resetAutoSaveFile();
+
             try
             {
                 WebClient dataClient = new WebClient();
                 System.IO.Stream dataStrm = dataClient.OpenRead("http://46.38.243.240/uhc" + cmbSeason.Text + "/data/" + cmbPlayer.Text + ".json");
 
                 topPartIndex = 0;
-                dgvPoints.Rows.Clear();
+                lock (dgvPoints)
+                {
+                    dgvPoints.Rows.Clear();
+                }
                 lblDataSets.Text = (dgvPoints.RowCount - 1).ToString();
 
                 System.IO.StreamReader sr = new System.IO.StreamReader(dataStrm);
@@ -681,18 +775,21 @@ namespace UHC_Tracker
             JsonSerializer jsonSer = new JsonSerializer();
             jsonSer.Formatting = Formatting.None;
             jsonSer.NullValueHandling = NullValueHandling.Ignore;
-            foreach (DataGridViewRow row in dgvPoints.Rows)
+            lock (dgvPoints)
             {
-                //IDictionary<string, string> d = convertRow(row);
-                RowData d = createRowObject(row);
-                if (d != null)
+                foreach (DataGridViewRow row in dgvPoints.Rows)
                 {
-                    StringBuilder sb = new StringBuilder();
-                    System.IO.StringWriter swL = new System.IO.StringWriter(sb);
-                    jsonSer.Serialize(swL, d);
+                    //IDictionary<string, string> d = convertRow(row);
+                    RowData d = createRowObject(row);
+                    if (d != null)
+                    {
+                        StringBuilder sb = new StringBuilder();
+                        System.IO.StringWriter swL = new System.IO.StringWriter(sb);
+                        jsonSer.Serialize(swL, d);
 
-                    json.Formatting = Formatting.Indented;
-                    json.WriteRawValue(sb.ToString());
+                        json.Formatting = Formatting.Indented;
+                        json.WriteRawValue(sb.ToString());
+                    }
                 }
             }
             json.WriteEndArray();
@@ -720,11 +817,14 @@ namespace UHC_Tracker
         {
             if (dlgEditTime.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                foreach (DataGridViewRow row in dgvPoints.SelectedRows)
+                lock (dgvPoints)
                 {
-                    double time = double.Parse(row.Cells[5].Value.ToString());
-                    time += dlgEditTime.time;
-                    row.Cells[5].Value = Math.Round(time, 2).ToString();
+                    foreach (DataGridViewRow row in dgvPoints.SelectedRows)
+                    {
+                        double time = double.Parse(row.Cells[5].Value.ToString());
+                        time += dlgEditTime.time;
+                        row.Cells[5].Value = Math.Round(time, 2).ToString();
+                    }
                 }
             }
         }
@@ -733,11 +833,14 @@ namespace UHC_Tracker
         {
             if (dgvPoints.SelectedRows.Count > 0)
             {
-                foreach (DataGridViewRow row in dgvPoints.SelectedRows)
+                lock (dgvPoints)
                 {
-                    if (dgvPoints.RowCount - 1 > 0)
+                    foreach (DataGridViewRow row in dgvPoints.SelectedRows)
                     {
-                        dgvPoints.Rows.Remove(row);
+                        if (dgvPoints.RowCount - 1 > 0)
+                        {
+                            dgvPoints.Rows.Remove(row);
+                        }
                     }
                 }
 
@@ -828,8 +931,25 @@ namespace UHC_Tracker
                 double y = double.Parse(dgvPoints.SelectedRows[0].Cells[2].Value.ToString());
                 double z = double.Parse(dgvPoints.SelectedRows[0].Cells[3].Value.ToString());
 
-                DataSource.DS.SetPlayerLocation(txtMCName.Text, (int) x, (int) y, (int) z);
+                DataSource.DS.SetPlayerLocation(txtMCName.Text, (int) -x, (int) y, (int) z);
             }
+        }
+
+        private void saveTimer_Tick(object sender, EventArgs e)
+        {
+            if (chkAutoSave.Checked && autoSaveFile != null)
+            {
+                tsslSaveState.Text = "Autosaving data to " + autoSaveFile;
+                System.IO.StreamWriter sw = new System.IO.StreamWriter(autoSaveFile);
+                doSave(sw);
+                sw.Close();
+                tsslSaveState.Text = System.DateTime.Now.ToLongTimeString() + ": Autosaving successful";
+            }
+        }
+
+        private void lblStatus_TextChanged(object sender, EventArgs e)
+        {
+            tsslConnection.Text = lblStatus.Text;
         }
     }
 
