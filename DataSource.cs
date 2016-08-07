@@ -20,6 +20,15 @@ namespace DataSource
         private const byte GET_PLAYER_LOCATION = 0;
         private const byte GET_WORLD_PATH = 20;
         private const byte SET_PLAYER_LOCATION = 30;
+        private const byte ACK_COMMAND = 99;
+
+        public const byte SAVE_WAYPOINT = 100;
+        public const byte SAVE_HOUSE_POINT = 101;
+        public const byte SAVE_PORTAL_POINT = 102;
+        public const byte SAVE_FIGHT_POINT = 103;
+        public const byte SAVE_SPOT_POINT = 104;
+        public const byte SAVE_DEATH_POINT = 105;
+        public const byte SAVE_HEAR_POINT = 106;
 
 		/// <summary>
 		/// True if connected.
@@ -143,7 +152,61 @@ namespace DataSource
             {
                 HandleWorldPath(message);
             }
+            else if (messageType >= SAVE_WAYPOINT && messageType <= SAVE_HEAR_POINT)
+            {
+                HandleTrackerCommand(message);
+            }
+            else
+            {
+                Console.WriteLine("Got message: " + message[0].ToString());
+            }
 		}
+
+        private static void HandleTrackerCommand(byte[] message) 
+        {
+            if (worldPathHandler != null)
+            {
+                try
+                {
+                    int reqIdx = 1;
+                    int sizeOfPlayerName = ByteConverter.ToInt32(message, reqIdx);
+                    reqIdx += INT_BYTES;
+                    string pName = ByteConverter.ToString(message, reqIdx, sizeOfPlayerName);
+                    reqIdx += sizeOfPlayerName;
+                    int sizeOfDesc = ByteConverter.ToInt32(message, reqIdx);
+                    reqIdx += INT_BYTES;
+                    string desc = ByteConverter.ToString(message, reqIdx, sizeOfDesc);
+                    reqIdx += sizeOfPlayerName;
+
+                    string response;
+                    response = worldPathHandler.CommandReceived(message[0], pName, desc);
+
+                    if (response != null) {
+                        int responseLength = response.Length;
+                        int pNameLength = pName.Length;
+                        byte[] data = new byte[1 + 4 + responseLength + 4 + pNameLength];
+                        int i = 0;
+                        data[i] = ACK_COMMAND;
+                        i++;
+                        InsertBytes(data, i, ByteConverter.GetBytes(pNameLength));
+                        i += INT_BYTES;
+                        InsertBytes(data, i, ByteConverter.GetBytes(pName));
+                        i += pNameLength;
+                        InsertBytes(data, i, ByteConverter.GetBytes(responseLength));
+                        i += INT_BYTES;
+                        InsertBytes(data, i, ByteConverter.GetBytes(response));
+                        i += responseLength;
+
+                        client.Send(data);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    File.AppendAllText("errordump.txt", "\r\nAn error occurred while handling a world path.\r\n" + ex.ToString() + "\r\n");
+                    System.Windows.Forms.MessageBox.Show("An error occurred while handling a world path." + Environment.NewLine + ex.Message + Environment.NewLine + ex.StackTrace);
+                }
+            }
+        }
 
 		private static void HandlePlayerLocation(byte[] message)
 		{
@@ -296,6 +359,14 @@ namespace DataSource
 			client.Connect(host, port);
 		}
 
+        public static void Disconnect()
+        {
+            if (client != null ) {
+                client.Disconnect();
+                client = null;
+            }
+        }
+
 		/// <summary>
 		/// Called if a connection is refused (unable to connect).
 		/// </summary>
@@ -307,6 +378,7 @@ namespace DataSource
 			Connect(lastHost, lastPort, true);
 		}
 
+        public static bool doReconnect = true;
 		/// <summary>
 		/// Called when we get disconnected.
 		/// </summary>
@@ -316,7 +388,9 @@ namespace DataSource
 			//if (!shuttingDown)
 			//	System.Windows.Forms.MessageBox.Show("Disconnected");
 			Console.WriteLine("Disconnected");
-			Connect(lastHost, lastPort, true);
+            if (doReconnect) {
+                Connect(lastHost, lastPort, true);
+            }
 		}
 
 		/// <summary>
@@ -351,6 +425,8 @@ namespace DataSource
     public interface DSHandlerWorldPath
     {
         void WorldPathReceived(string worldPath, int dimension, string worldName, int spawnX, int spawnY, int spawnZ);
+
+        string CommandReceived(byte command, string playerName, string desc);
     }
 
     public class Entity

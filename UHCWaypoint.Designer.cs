@@ -114,6 +114,8 @@ namespace UHC_Tracker
             this.tsslSaveState = new System.Windows.Forms.ToolStripStatusLabel();
             this.tsslConnection = new System.Windows.Forms.ToolStripStatusLabel();
             this.saveTimer = new System.Windows.Forms.Timer(this.components);
+            this.label23 = new System.Windows.Forms.Label();
+            this.txtMCIp = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.dgvPoints)).BeginInit();
             this.cmsPoints.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -128,6 +130,7 @@ namespace UHC_Tracker
             this.txtX.Size = new System.Drawing.Size(50, 20);
             this.txtX.TabIndex = 2;
             this.txtX.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.txtX.Enter += new System.EventHandler(this.txt_Enter);
             this.txtX.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtCoord_KeyPress);
             // 
             // txtY
@@ -137,6 +140,7 @@ namespace UHC_Tracker
             this.txtY.Size = new System.Drawing.Size(50, 20);
             this.txtY.TabIndex = 3;
             this.txtY.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.txtY.Enter += new System.EventHandler(this.txt_Enter);
             this.txtY.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtCoord_KeyPress);
             // 
             // txtZ
@@ -146,6 +150,7 @@ namespace UHC_Tracker
             this.txtZ.Size = new System.Drawing.Size(50, 20);
             this.txtZ.TabIndex = 4;
             this.txtZ.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.txtZ.Enter += new System.EventHandler(this.txt_Enter);
             this.txtZ.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtCoord_KeyPress);
             // 
             // updateTimer
@@ -380,9 +385,9 @@ namespace UHC_Tracker
             // 
             this.dgvPoints.AllowUserToResizeColumns = false;
             this.dgvPoints.AllowUserToResizeRows = false;
-            this.dgvPoints.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.dgvPoints.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.dgvPoints.ColumnHeadersHeight = 18;
             this.dgvPoints.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.dgvPoints.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
@@ -416,6 +421,7 @@ namespace UHC_Tracker
             this.Column1.MaxInputLength = 4;
             this.Column1.Name = "Column1";
             this.Column1.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.Column1.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             this.Column1.Width = 40;
             // 
             // Column2
@@ -426,6 +432,7 @@ namespace UHC_Tracker
             this.Column2.MaxInputLength = 5;
             this.Column2.Name = "Column2";
             this.Column2.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.Column2.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             this.Column2.Width = 60;
             // 
             // Column3
@@ -436,6 +443,7 @@ namespace UHC_Tracker
             this.Column3.MaxInputLength = 5;
             this.Column3.Name = "Column3";
             this.Column3.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.Column3.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             this.Column3.Width = 60;
             // 
             // Column4
@@ -446,6 +454,7 @@ namespace UHC_Tracker
             this.Column4.MaxInputLength = 5;
             this.Column4.Name = "Column4";
             this.Column4.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.Column4.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             this.Column4.Width = 60;
             // 
             // Column5
@@ -456,6 +465,7 @@ namespace UHC_Tracker
             this.Column5.MaxInputLength = 2;
             this.Column5.Name = "Column5";
             this.Column5.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.Column5.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             this.Column5.Width = 30;
             // 
             // Column6
@@ -466,6 +476,7 @@ namespace UHC_Tracker
             this.Column6.MaxInputLength = 6;
             this.Column6.Name = "Column6";
             this.Column6.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.Column6.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             this.Column6.Width = 50;
             // 
             // Column8
@@ -475,6 +486,7 @@ namespace UHC_Tracker
             this.Column8.MaxInputLength = 2;
             this.Column8.MinimumWidth = 30;
             this.Column8.Name = "Column8";
+            this.Column8.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             this.Column8.Width = 30;
             // 
             // Column7
@@ -485,6 +497,7 @@ namespace UHC_Tracker
             this.Column7.MaxInputLength = 20;
             this.Column7.Name = "Column7";
             this.Column7.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.Column7.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             this.Column7.Width = 90;
             // 
             // clmDesc
@@ -492,6 +505,7 @@ namespace UHC_Tracker
             this.clmDesc.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
             this.clmDesc.HeaderText = "Desc";
             this.clmDesc.Name = "clmDesc";
+            this.clmDesc.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             this.clmDesc.Width = 197;
             // 
             // cmsPoints
@@ -738,18 +752,6 @@ namespace UHC_Tracker
             // cmbSeason
             // 
             this.cmbSeason.FormattingEnabled = true;
-            this.cmbSeason.Items.AddRange(new object[] {
-            "3",
-            "5",
-            "6",
-            "7",
-            "8",
-            "9",
-            "10",
-            "11",
-            "12",
-            "13",
-            "14"});
             this.cmbSeason.Location = new System.Drawing.Point(168, 50);
             this.cmbSeason.Name = "cmbSeason";
             this.cmbSeason.Size = new System.Drawing.Size(72, 21);
@@ -934,7 +936,7 @@ namespace UHC_Tracker
             // 
             this.txtMCName.Location = new System.Drawing.Point(351, 24);
             this.txtMCName.Name = "txtMCName";
-            this.txtMCName.Size = new System.Drawing.Size(70, 20);
+            this.txtMCName.Size = new System.Drawing.Size(95, 20);
             this.txtMCName.TabIndex = 64;
             // 
             // label22
@@ -967,7 +969,6 @@ namespace UHC_Tracker
             this.statusStrip1.TabIndex = 66;
             this.statusStrip1.Text = "statusStrip1";
             // 
-            // 
             // tsslSaveState
             // 
             this.tsslSaveState.Name = "tsslSaveState";
@@ -986,11 +987,32 @@ namespace UHC_Tracker
             this.saveTimer.Interval = 60000;
             this.saveTimer.Tick += new System.EventHandler(this.saveTimer_Tick);
             // 
+            // label23
+            // 
+            this.label23.AutoSize = true;
+            this.label23.Location = new System.Drawing.Point(348, 47);
+            this.label23.Name = "label23";
+            this.label23.Size = new System.Drawing.Size(98, 13);
+            this.label23.TabIndex = 68;
+            this.label23.Text = "Minecraft Server IP";
+            this.label23.DoubleClick += new System.EventHandler(this.label23_DoubleClick);
+            // 
+            // txtMCIp
+            // 
+            this.txtMCIp.Enabled = false;
+            this.txtMCIp.Location = new System.Drawing.Point(351, 63);
+            this.txtMCIp.Name = "txtMCIp";
+            this.txtMCIp.Size = new System.Drawing.Size(95, 20);
+            this.txtMCIp.TabIndex = 67;
+            this.txtMCIp.Text = "46.38.243.240";
+            // 
             // UHCWaypoint
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(644, 480);
+            this.Controls.Add(this.label23);
+            this.Controls.Add(this.txtMCIp);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.btnHear);
             this.Controls.Add(this.label22);
@@ -1052,7 +1074,7 @@ namespace UHC_Tracker
             this.MaximumSize = new System.Drawing.Size(660, 1200);
             this.MinimumSize = new System.Drawing.Size(660, 410);
             this.Name = "UHCWaypoint";
-            this.Text = "UHC Waypoint Tracker";
+            this.Text = "UHC Waypoint Tracker V0.4.19";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dgvPoints)).EndInit();
@@ -1127,15 +1149,6 @@ namespace UHC_Tracker
         private System.Windows.Forms.Button btnLoadPlayerlist;
         private System.Windows.Forms.TextBox txtDim;
         private System.Windows.Forms.Label label18;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column2;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column3;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column4;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column5;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column6;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column8;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column7;
-        private System.Windows.Forms.DataGridViewTextBoxColumn clmDesc;
         private System.Windows.Forms.Button cmdUseStart;
         private System.Windows.Forms.Button cmdUseEnd;
         private System.Windows.Forms.TextBox txtEndMins;
@@ -1155,6 +1168,17 @@ namespace UHC_Tracker
         private System.Windows.Forms.ToolStripStatusLabel tsslSaveState;
         private System.Windows.Forms.Timer saveTimer;
         private System.Windows.Forms.ToolStripStatusLabel tsslConnection;
+        private System.Windows.Forms.Label label23;
+        private System.Windows.Forms.TextBox txtMCIp;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column2;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column3;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column4;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column5;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column6;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column8;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column7;
+        private System.Windows.Forms.DataGridViewTextBoxColumn clmDesc;
     }
 }
 

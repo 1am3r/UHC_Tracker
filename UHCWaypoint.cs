@@ -79,7 +79,7 @@ namespace UHC_Tracker
             DataSource.DS.InitializeConnectionStatusChanged(this);
             DataSource.DS.InitializePlayerLocation(this);
             DataSource.DS.InitializeWorldPath(this);
-            DataSource.DS.Connect("46.38.243.240", 50191);
+            DataSource.DS.Connect(txtMCIp.Text, 50191);
 
             cmbEpisode.SelectedIndex = 0;
             cmbSeason.SelectedIndex = cmbSeason.Items.Count - 1;
@@ -149,6 +149,78 @@ namespace UHC_Tracker
         public void WorldPathReceived(string worldPath, int dimension, string worldName, int spawnX, int spawnY, int spawnZ)
         {
             txtDim.SetPropertyThreadSafe(() => txtDim.Text, dimension.ToString());
+        }
+
+        delegate void CallClickHandlerCallback(Button btn);
+        private void CallClickHandler(Button btn)
+        {
+            if (btn.InvokeRequired) {
+                CallClickHandlerCallback cb = new CallClickHandlerCallback(CallClickHandler);
+                this.Invoke(cb, new object[] { btn });
+            } else {
+                btn.PerformClick();
+            }
+        }
+
+        delegate void CallAddPointCallback(Button btn, string message);
+        private void CallAddPoint(Button btn, string message = "")
+        {
+            if (btn.InvokeRequired)
+            {
+                CallAddPointCallback cb = new CallAddPointCallback(CallAddPoint);
+                this.Invoke(cb, new object[] { btn, message });
+            }
+            else
+            {
+                addPoint(btn, new EventArgs(), message);
+            }
+        }
+
+        public string CommandReceived(byte command, string playerName, string desc = "")
+        {
+            if (playerName.ToLower() == txtMCName.Text.ToLower())
+            {
+                string response = "Got Point (" + txtX.Text + "," + txtY.Text + "," + txtZ.Text + ") Type: ";
+
+                switch (command)
+                {
+                    case DataSource.DS.SAVE_WAYPOINT:
+                        CallClickHandler(btnWaypoint);
+                        response += "Waypoint";
+                        break;
+                    case DataSource.DS.SAVE_HOUSE_POINT:
+                        CallAddPoint(btnHouse, desc);
+                        response += "'House' with description: " + desc;
+                        break;
+                    case DataSource.DS.SAVE_PORTAL_POINT:
+                        CallAddPoint(btnPortal, desc);
+                        response += "'Portal' with description: " + desc;
+                        break;
+                    case DataSource.DS.SAVE_FIGHT_POINT:
+                        CallAddPoint(btnFight, desc);
+                        response += "'Fight' with description: " + desc;
+                        break;
+                    case DataSource.DS.SAVE_DEATH_POINT:
+                        CallAddPoint(btnDeath, desc);
+                        response += "'Death' with description: " + desc;
+                        break;
+                    case DataSource.DS.SAVE_SPOT_POINT:
+                        CallAddPoint(btnSpotted, desc);
+                        response += "'Spot' with description: " + desc;
+                        break;
+                    case DataSource.DS.SAVE_HEAR_POINT:
+                        CallAddPoint(btnHear, desc);
+                        response += "'Hear' with description: " + desc;
+                        break;
+                    default:
+                        response = "";
+                        break;
+                }
+
+                return response;
+            } else {
+                return null;
+            }
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -267,6 +339,11 @@ namespace UHC_Tracker
 
         private void addPoint(object sender, EventArgs e)
         {
+            addPoint(sender, e, "");
+        }
+
+        private void addPoint(object sender, EventArgs e, string message = null)
+        {
             string id = "0";
             string seq = txtSeq.Text;
             bool topPart = true;
@@ -278,9 +355,13 @@ namespace UHC_Tracker
             }
             else
             {
-                AddDesc descFrm = new AddDesc();
-                descFrm.ShowDialog();
-                desc = descFrm.desc;
+                if (message == null) {
+                    AddDesc descFrm = new AddDesc();
+                    descFrm.ShowDialog();
+                    desc = descFrm.desc;
+                } else {
+                    desc = message;
+                }
 
                 if (sender.Equals(btnHouse))
                 {
@@ -652,7 +733,7 @@ namespace UHC_Tracker
         {
             if (!DataSource.DS.isConnected)
             {
-                DataSource.DS.Connect("46.38.243.240", 50191);
+                DataSource.DS.Connect(txtMCIp.Text, 50191);
             }
             
         }
@@ -869,14 +950,22 @@ namespace UHC_Tracker
 
                 foreach (IDictionary<string, string> d in data)
                 {
-                    string name = d["name"];
-                    if (name != "")
-                    {
+                    if (d.ContainsKey("name")) {
+                        string name = d["name"];
                         cmbPlayer.Items.Add(name);
                     }
                 }
                 cmbPlayer.SelectedIndex = 0;
 
+                foreach (IDictionary<string, string> d in data)
+                {
+                    if (d.ContainsKey("season"))
+                    {
+                        string season = d["season"];
+                        cmbSeason.Items.Add(season);
+                    }
+                }
+                cmbSeason.SelectedIndex = cmbSeason.Items.Count - 1;
             }
             catch (Exception ex)
             {
@@ -955,6 +1044,22 @@ namespace UHC_Tracker
         {
             tsslConnection.Text = lblStatus.Text;
         }
+
+        private void label23_DoubleClick(object sender, EventArgs e)
+        {
+            if (!txtMCIp.Enabled) {
+                DataSource.DS.doReconnect = false;
+                DataSource.DS.Disconnect();
+            } else {
+                DataSource.DS.doReconnect = true;
+            }
+            txtMCIp.Enabled = !txtMCIp.Enabled;
+        }
+
+        private void txt_Enter(object sender, EventArgs e)
+        {
+            ((TextBox) sender).SelectAll();
+       }
     }
 
     public class RowData
